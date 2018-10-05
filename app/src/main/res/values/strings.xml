@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Parley Pirate</string>
     <string name="action_settings">Settings</string>
+    <string name="onCreateToast">onCreate called</string>
+    <string name="onStartToast">onStart called</string>
+    <string name="onResumeToast">onResume called</string>
+    <string name="onPauseToast">onPause called</string>
+    <string name="onStopToast">onStop called</string>
+    <string name="onDestroyToast">onDestroy called</string>
 </resources>
