@@ -1,10 +1,12 @@
 package project.cse5236.parleypirate;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
@@ -13,9 +15,9 @@ import android.widget.EditText;
 
 
 /**
- * The LoginActivityFragment class
+ * The LoginActivityFragment class.  Adapted from Tic-Tac-Toe by Adam C. Champion
  */
-public class LoginActivityFragment extends Fragment {
+public class LoginActivityFragment extends Fragment implements View.OnClickListener {
 
     private AutoCompleteTextView mUsernameAutoCompleteTextView;
     private EditText mPasswordEditText;
@@ -52,10 +54,28 @@ public class LoginActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_login_activity, container, false);
+        View v;
+        Activity activity = getActivity();
+
+        if (activity != null) {
+            int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+            if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
+                v = inflater.inflate(R.layout.fragment_login_landscape, container, false);
+            } else {
+                v = inflater.inflate(R.layout.fragment_login, container, false);
+            }
+        }
+        else {
+            v = inflater.inflate(R.layout.fragment_login, container, false);
+        }
+
         mUsernameAutoCompleteTextView = v.findViewById(R.id.username);
         mPasswordEditText = v.findViewById(R.id.password);
+
         mSignInButton = v.findViewById(R.id.username_sign_in_button);
+        if(mSignInButton != null){
+            mSignInButton.setOnClickListener(this);
+        }
         return v;
     }
 
@@ -67,20 +87,20 @@ public class LoginActivityFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    public void onClick(View v) {
+        int id = v.getId();
+        if(id==R.id.username_sign_in_button){
+            login();
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    private void login(){
+        String username = mUsernameAutoCompleteTextView.getText().toString();
+        String password = mPasswordEditText.getText().toString();
+        Activity activity = getActivity();
+
+        //send username and password to firebase
+
     }
 
     /**
