@@ -1,21 +1,33 @@
 package project.cse5236.parleypirate;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Taken from https://github.com/firebase/snippets-android/blob/f085cb49c21313a5d79730c025925a0b5f1610eb/auth/app/src/main/java/com/google/firebase/quickstart/auth/FirebaseUIActivity.java
@@ -24,18 +36,38 @@ import java.util.List;
 public class FirebaseUIActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
+    private static final String TAG = "FirebaseUIActivity";
+
+    private Button mLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firebase_ui);
-        createSignInIntent();
+
+        Intent intent = getIntent();
+        if(intent!=null){
+            Bundle extras = intent.getExtras();
+            if(extras!=null){
+                if(extras.containsKey(getString(R.string.snackbar))) {
+                    Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), (String) extras.get(getString(R.string.snackbar)), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        mLoginButton = findViewById(R.id.login_button);
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createSignInIntent();
+            }
+        });
     }
 
     public void createSignInIntent() {
         // [START auth_fui_create_intent]
         // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
+        List<AuthUI.IdpConfig> providers = Collections.singletonList(
                 new AuthUI.IdpConfig.EmailBuilder().build());
 
         // Create and launch sign-in intent
@@ -56,14 +88,33 @@ public class FirebaseUIActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
-                //TODO need to store user as an object
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                CollectionReference usersRef = db.collection("users");
+                final Query query = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("LogNotTimber")
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            QuerySnapshot qs = task.getResult();
+                            if (qs.size()>0) {
+                                Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                            } else {
+                                Log.d(TAG, "Creating user");
+                                createUser();
+                            }
+                        }else{
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
                 startActivity(new Intent(FirebaseUIActivity.this, MainActivity.class));
                 finish();
 
                 // ...
             } else {
-                Snackbar loginErrorSnackbar;
                 if(response==null) {
                     Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), R.string.login_cancelled, Snackbar.LENGTH_SHORT).show();
                 }else{
@@ -79,30 +130,6 @@ public class FirebaseUIActivity extends AppCompatActivity {
     }
     // [END auth_fui_result]
 
-    public void signOut() {
-        // [START auth_fui_signout]
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                    }
-                });
-        // [END auth_fui_signout]
-    }
-
-    public void delete() {
-        // [START auth_fui_delete]
-        AuthUI.getInstance()
-                .delete(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                    }
-                });
-        // [END auth_fui_delete]
-    }
 
     /*
     public void themeAndLogo() {
@@ -120,6 +147,31 @@ public class FirebaseUIActivity extends AppCompatActivity {
         // [END auth_fui_theme_logo]
     }
     */
+
+    private void createUser(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Map<String,Object> userAsMap = new HashMap<>();
+        userAsMap.put("displayname",user.getDisplayName());
+        userAsMap.put("email",user.getEmail());
+        db.collection("users")
+                .add(userAsMap)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @SuppressLint("LogNotTimber")
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @SuppressLint("LogNotTimber")
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+    }
 
     public void privacyAndTerms() {
         List<AuthUI.IdpConfig> providers = Collections.emptyList();
