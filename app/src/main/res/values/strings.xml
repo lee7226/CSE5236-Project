@@ -36,4 +36,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="action_update_displayname">Update display name</string>
+    <string name="change">Confirm change</string>
+    <string name="cancel">Cancel</string>
 </resources>

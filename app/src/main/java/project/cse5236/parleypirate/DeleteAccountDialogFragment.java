@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 public class DeleteAccountDialogFragment extends DialogFragment {
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
@@ -16,12 +18,12 @@ public class DeleteAccountDialogFragment extends DialogFragment {
         builder.setMessage(R.string.delete_account_confirmation)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(DeleteAccountDialogFragment.this);
+                        mListener.onDeleteAccountDialogFragmentPositiveClick(DeleteAccountDialogFragment.this);
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogNegativeClick(DeleteAccountDialogFragment.this);
+                        //do nothing
                     }
                 });
         // Create the AlertDialog object and return it
@@ -29,8 +31,7 @@ public class DeleteAccountDialogFragment extends DialogFragment {
     }
 
     public interface DeleteAccountDialogFragmentListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onDeleteAccountDialogFragmentPositiveClick(DialogFragment dialog);
     }
 
     // Use this instance of the interface to deliver action events
