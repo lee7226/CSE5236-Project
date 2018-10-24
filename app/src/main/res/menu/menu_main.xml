@@ -22,5 +22,10 @@
         android:orderInCategory="3"
         android:title="@string/action_update_displayname"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_create_meeting"
+        android:orderInCategory="3"
+        android:title="@string/action_create_meeting"
+        app:showAsAction="never"/>
 
 </menu>

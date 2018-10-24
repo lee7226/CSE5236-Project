@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
             confirmDelete();
         }else if(id == R.id.action_update_displayname){
             updateDisplayName();
+        } else if(id == R.id.action_create_meeting) {
+            createNewMeeting();
         }
 
         return super.onOptionsItemSelected(item);
@@ -106,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
     private void updateDisplayName() {
         UpdateDisplayNameDialogFragment dialog = new UpdateDisplayNameDialogFragment();
         dialog.show(getSupportFragmentManager(), UPDATE_DISPLAYNAME_DIALOG_FRAGMENT_TAG);
+    }
+
+    private void createNewMeeting() {
+        Intent newMeetingIntent = new Intent(MainActivity.this,CreateMeetingActivity.class);
+        startActivity(newMeetingIntent);
+        finish();
     }
 
     public void signOut() {
