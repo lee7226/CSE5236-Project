@@ -5,32 +5,39 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 public class UpdateDisplayNameDialogFragment extends DialogFragment {
 
+    private EditText mEditText;
+
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
+        LayoutInflater inflater = getActivity().getLayoutInflater();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View v = inflater.inflate(R.layout.dialog_update_displayname,null);
+        mEditText = v.findViewById(R.id.update_display_name_edittext);
         builder.setMessage(R.string.action_update_displayname)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.change, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(UpdateDisplayNameDialogFragment.this);
+                        mListener.onUpdateDisplayNameDialogFragmentPositiveClick(UpdateDisplayNameDialogFragment.this,String.valueOf(mEditText.getText()));
                     }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogNegativeClick(UpdateDisplayNameDialogFragment.this);
+                        //do nothing
                     }
-                }).setView(R.id.action_update_displayname);
-        // Create the AlertDialog object and return it
+                }).setView(v);
         return builder.create();
     }
 
     public interface UpdateDisplayNameDialogFragmentListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onUpdateDisplayNameDialogFragmentPositiveClick(DialogFragment dialog, String result);
     }
 
     // Use this instance of the interface to deliver action events
@@ -42,7 +49,7 @@ public class UpdateDisplayNameDialogFragment extends DialogFragment {
         super.onAttach(context);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the DeleteAccountDialogFragmentListener so we can send events to the host
+            // Instantiate the UpdateDisplayNameDialogFragmentListener so we can send events to the host
             mListener = (UpdateDisplayNameDialogFragment.UpdateDisplayNameDialogFragmentListener) context;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception

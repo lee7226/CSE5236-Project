@@ -170,9 +170,10 @@ public class CreateMeetingActivity extends AppCompatActivity {
 //                    }
 //                });
         Map<String,Object> meetingAsMap = new HashMap<>();
-        meetingAsMap.put("owner", user.getDisplayName());
+        meetingAsMap.put("members", user.getDisplayName());
         meetingAsMap.put("location", "locationinfo");
-        meetingAsMap.put("members", "other usernames and stuff");
+        meetingAsMap.put("starttime", "1024201810");
+        meetingAsMap.put("endtime", "1024201812");
         db.collection("meetings")
                 .add(meetingAsMap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

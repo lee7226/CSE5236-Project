@@ -36,5 +36,14 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="action_update_displayname">Update display name</string>
+    <string name="change">Confirm change</string>
+    <string name="cancel">Cancel</string>
     <string name="action_create_meeting">Create new Parley</string>
+
+    <string name="starttime_label">Start Time</string>
+    <string name="endtime_label">End Time</string>
+    <string name="members_label">Members</string>
+    <string name="availabilities_label">Availabilities</string>
+    <string name="location_label">Location</string>
+    <string name="button_create_meeting">Create Parley!</string>
 </resources>
