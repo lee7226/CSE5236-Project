@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -35,145 +36,52 @@ public class CreateMeetingActivity extends AppCompatActivity {
     private static final String TAG = "CreateMeetingActivity";
 
     private Button mCreateMeetingButton;
+    private EditText mEndTimeEdit;
+    private EditText mStartTimeEdit;
+    private EditText mMembersEdit;
+    private EditText mAvailablilityEdit;
+    private EditText mLocationEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_new_meeting);
 
-        Intent intent = getIntent();
-        /*
-        if(intent!=null){
-            Bundle extras = intent.getExtras();
-            if(extras!=null){
-                if(extras.containsKey(getString(R.string.snackbar))) {
-                    Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), (String) extras.get(getString(R.string.snackbar)), Snackbar.LENGTH_SHORT).show();
-                }
-            }
-        }
-        */
+        mStartTimeEdit = findViewById(R.id.date_starttime);
+        mEndTimeEdit = findViewById(R.id.date_endtime);
+        mMembersEdit = findViewById(R.id.string_members_input);
+        mAvailablilityEdit = findViewById(R.id.string_availabilities_input);
+        mLocationEdit = findViewById(R.id.string_location_input);
 
-        mCreateMeetingButton = findViewById(R.id.login_button);
+
+        mCreateMeetingButton = findViewById(R.id.button_create_meeting);
         mCreateMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewMeetingIntent();
+                int id = v.getId();
+                if(id==R.id.button_create_meeting) {
+                    createMeeting();
+                }
             }
         });
     }
 
-    public void createNewMeetingIntent() {
-        // [START auth_fui_create_intent]
-        // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Collections.singletonList(
-                new AuthUI.IdpConfig.EmailBuilder().build());
-
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_CREATE_MEETING);
-        // [END auth_fui_create_intent]
-    }
-
-    // [START auth_fui_result]
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_CREATE_MEETING) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == RESULT_OK) {
-                createMeeting();
-//                FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                CollectionReference usersRef = db.collection("users");
-//                final Query query = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
-//                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @SuppressLint("LogNotTimber")
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if(task.isSuccessful()){
-//                            QuerySnapshot qs = task.getResult();
-//                            if (qs.size()>0) {
-//                                Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-//                            } else {
-//                                Log.d(TAG, "Creating meeting");
-//                                createMeeting();
-//                            }
-//                        }else{
-//                            Log.d(TAG, "get failed with ", task.getException());
-//                        }
-//                    }
-//                });
-
-                startActivity(new Intent(CreateMeetingActivity.this, MainActivity.class));
-                finish();
-
-                // ...
-            } else {
-                if(response==null) {
-                    Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), R.string.login_cancelled, Snackbar.LENGTH_SHORT).show();
-                }else{
-                    CharSequence cs = getString(R.string.login_error,response.getError().getErrorCode());
-                    Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), cs, Snackbar.LENGTH_SHORT).show();
-                }
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
-        }
-    }
-    // [END auth_fui_result]
-
-
-    /*
-    public void themeAndLogo() {
-        List<AuthUI.IdpConfig> providers = Collections.emptyList();
-
-        // [START auth_fui_theme_logo]
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setLogo(R.drawable.my_great_logo)      // Set logo drawable
-                        .setTheme(R.style.MySuperAppTheme)      // Set theme
-                        .build(),
-                RC_SIGN_IN);
-        // [END auth_fui_theme_logo]
-    }
-    */
-
-    private void createMeeting(){
+    public void createMeeting(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        Map<String,Object> userAsMap = new HashMap<>();
-//        userAsMap.put("displayname",user.getDisplayName());
-//        userAsMap.put("email",user.getEmail());
-//        db.collection("users")
-//                .add(userAsMap)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @SuppressLint("LogNotTimber")
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @SuppressLint("LogNotTimber")
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "Error adding document", e);
-//                    }
-//                });
+
         Map<String,Object> meetingAsMap = new HashMap<>();
-        meetingAsMap.put("members", user.getDisplayName());
-        meetingAsMap.put("location", "locationinfo");
-        meetingAsMap.put("starttime", "1024201810");
-        meetingAsMap.put("endtime", "1024201812");
+
+        String membersText = mMembersEdit.getText().toString();
+        String locationText = mLocationEdit.getText().toString();
+        String availabilityText = mAvailablilityEdit.getText().toString();
+        String startTimeText = mStartTimeEdit.getText().toString();
+        String endTimeText = mEndTimeEdit.getText().toString();
+
+        meetingAsMap.put("members", membersText);
+        meetingAsMap.put("location", locationText);
+        meetingAsMap.put("availabilities", availabilityText);
+        meetingAsMap.put("starttime",  startTimeText);
+        meetingAsMap.put("endtime", endTimeText);
         db.collection("meetings")
                 .add(meetingAsMap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -181,6 +89,7 @@ public class CreateMeetingActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        returnToMenu("Arr!  Successfully created a parley!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -188,7 +97,16 @@ public class CreateMeetingActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error adding document", e);
+                        returnToMenu("Failed to create parley, shiver me timbers! Please try again later.");
                     }
                 });
     }
+
+    private void returnToMenu(String message){
+        Intent menuIntent = new Intent(CreateMeetingActivity.this, MainActivity.class);
+        menuIntent.putExtra(getString(R.string.snackbar),message);
+        startActivity(menuIntent);
+        finish();
+    }
+
 }

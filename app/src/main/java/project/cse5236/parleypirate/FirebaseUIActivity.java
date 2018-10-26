@@ -46,13 +46,8 @@ public class FirebaseUIActivity extends AppCompatActivity {
         setContentView(R.layout.activity_firebase_ui);
 
         Intent intent = getIntent();
-        if(intent!=null){
-            Bundle extras = intent.getExtras();
-            if(extras!=null){
-                if(extras.containsKey(getString(R.string.snackbar))) {
-                    Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), (String) extras.get(getString(R.string.snackbar)), Snackbar.LENGTH_SHORT).show();
-                }
-            }
+        if(intent != null && intent.hasExtra(getString(R.string.snackbar))){
+            Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), (String) intent.getExtras().get(getString(R.string.snackbar)), Snackbar.LENGTH_SHORT).show();
         }
 
         mLoginButton = findViewById(R.id.login_button);
@@ -65,7 +60,6 @@ public class FirebaseUIActivity extends AppCompatActivity {
     }
 
     public void createSignInIntent() {
-        // [START auth_fui_create_intent]
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Collections.singletonList(
                 new AuthUI.IdpConfig.EmailBuilder().build());
@@ -75,12 +69,12 @@ public class FirebaseUIActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setLogo(R.drawable.the_parley_pirate_v1)
+                        .setTheme(R.style.AppTheme)
                         .build(),
                 RC_SIGN_IN);
-        // [END auth_fui_create_intent]
     }
 
-    // [START auth_fui_result]
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -104,16 +98,12 @@ public class FirebaseUIActivity extends AppCompatActivity {
                                 Log.d(TAG, "Creating user");
                                 createUser();
                             }
+                            goToMenu();
                         }else{
                             Log.d(TAG, "get failed with ", task.getException());
                         }
                     }
                 });
-
-                startActivity(new Intent(FirebaseUIActivity.this, MainActivity.class));
-                finish();
-
-                // ...
             } else {
                 if(response==null) {
                     Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), R.string.login_cancelled, Snackbar.LENGTH_SHORT).show();
@@ -121,32 +111,17 @@ public class FirebaseUIActivity extends AppCompatActivity {
                     CharSequence cs = getString(R.string.login_error,response.getError().getErrorCode());
                     Snackbar.make(findViewById(R.id.firebase_ui_coordinator_layout), cs, Snackbar.LENGTH_SHORT).show();
                 }
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
             }
         }
     }
-    // [END auth_fui_result]
 
-
-    /*
-    public void themeAndLogo() {
-        List<AuthUI.IdpConfig> providers = Collections.emptyList();
-
-        // [START auth_fui_theme_logo]
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setLogo(R.drawable.my_great_logo)      // Set logo drawable
-                        .setTheme(R.style.MySuperAppTheme)      // Set theme
-                        .build(),
-                RC_SIGN_IN);
-        // [END auth_fui_theme_logo]
+    private void goToMenu(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Intent mainMenuIntent = new Intent(FirebaseUIActivity.this,MainActivity.class);
+        mainMenuIntent.putExtra(getString(R.string.snackbar),getString(R.string.login_successful,user.getDisplayName()));
+        startActivity(mainMenuIntent);
+        finish();
     }
-    */
 
     private void createUser(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -173,18 +148,4 @@ public class FirebaseUIActivity extends AppCompatActivity {
 
     }
 
-    public void privacyAndTerms() {
-        List<AuthUI.IdpConfig> providers = Collections.emptyList();
-        // [START auth_fui_pp_tos]
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setTosAndPrivacyPolicyUrls(
-                                "https://example.com/terms.html",
-                                "https://example.com/privacy.html")
-                        .build(),
-                RC_SIGN_IN);
-        // [END auth_fui_pp_tos]
-    }
 }

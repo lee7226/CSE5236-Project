@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,9 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements DeleteAccountDialogFragment.DeleteAccountDialogFragmentListener, UpdateDisplayNameDialogFragment.UpdateDisplayNameDialogFragmentListener {
 
@@ -40,12 +38,7 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
     public static final String SUCCESSFULLY_DELETED_ACCOUNT = "Successfully deleted account";
     public static final String SUCCESSFULLY_LOGGED_OUT = "Successfully logged out";
 
-    private Button mCreateMeetingButton;
-    private EditText mEndTimeEdit;
-    private EditText mStartTimeEdit;
-    private EditText mMembersEdit;
-    private EditText mAvailablilityEdit;
-    private EditText mLocationEdit;
+    private Button mNewMeetingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +46,16 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mCreateMeetingButton = findViewById(R.id.button_create_meeting);
-        mCreateMeetingButton.setOnClickListener(new View.OnClickListener() {
+        Intent intent = getIntent();
+        if(intent != null && intent.hasExtra(getString(R.string.snackbar))){
+            Snackbar.make(findViewById(R.id.main_activity_coordinator_layout), (String) intent.getExtras().get(getString(R.string.snackbar)), Snackbar.LENGTH_SHORT).show();
+        }
+
+        mNewMeetingButton = findViewById(R.id.button_new_meeting);
+        mNewMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createMeeting();
+                startActivity(new Intent(MainActivity.this,CreateMeetingActivity.class));
             }
         });
     }
@@ -121,13 +119,6 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
     private void updateDisplayNameDialog() {
         UpdateDisplayNameDialogFragment dialog = new UpdateDisplayNameDialogFragment();
         dialog.show(getSupportFragmentManager(), UPDATE_DISPLAYNAME_DIALOG_FRAGMENT_TAG);
-    }
-
-    private void createNewMeeting() {
-        Log.i(TAG, "running createNewMeeting");
-        Intent newMeetingIntent = new Intent(MainActivity.this,CreateMeetingActivity.class);
-        startActivity(newMeetingIntent);
-        //finish();
     }
 
     public void signOut() {
@@ -280,43 +271,5 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
         });
     }
 
-    public void createMeeting(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        mStartTimeEdit = findViewById(R.id.date_starttime);
-        mEndTimeEdit = findViewById(R.id.date_endtime);
-        mMembersEdit = findViewById(R.id.string_members_input);
-        mAvailablilityEdit = findViewById(R.id.string_availabilities_input);
-        mLocationEdit = findViewById(R.id.string_availabilities_input);
-
-        Map<String,Object> meetingAsMap = new HashMap<>();
-
-        String membersText = mMembersEdit.getText().toString();
-        String locationText = mLocationEdit.getText().toString();
-        String availabilityText = mAvailablilityEdit.getText().toString();
-        String startTimeText = mStartTimeEdit.getText().toString();
-        String endTimeText = mEndTimeEdit.getText().toString();
-
-        meetingAsMap.put("members", membersText);
-        meetingAsMap.put("location", locationText);
-        meetingAsMap.put("availabilities", availabilityText);
-        meetingAsMap.put("starttime",  startTimeText);
-        meetingAsMap.put("endtime", endTimeText);
-        db.collection("meetings")
-                .add(meetingAsMap)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-    }
 }
