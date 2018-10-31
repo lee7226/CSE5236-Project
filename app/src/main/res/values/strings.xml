@@ -46,4 +46,10 @@
     <string name="button_create_meeting">Create Parley!</string>
     <string name="string_new_meeting">Create a parley!</string>
     <string name="login_successful">Welcome aboard, %1$s!</string>
+    <string name="startdate_label">Start Date</string>
+    <string name="enddate_label">End Date</string>
+    <string name="select_startdate_label">Select Start Date</string>
+    <string name="select_enddate_label">Select End Date</string>
+    <string name="end_date">endDate</string>
+    <string name="start_date">startDate</string>
 </resources>

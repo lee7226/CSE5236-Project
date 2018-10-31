@@ -25,7 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".CreateMeetingActivity" />
+        <activity android:name=".MeetingTimeActivity" />
+        <activity android:name=".EnterAvailabilityActivity" />
+        <activity android:name=".StartDateActivity" />
+        <activity android:name=".EndDateActivity"></activity>
     </application>
 
 </manifest>

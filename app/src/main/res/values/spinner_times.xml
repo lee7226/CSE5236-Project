@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="times_array">
+        <item>12:00AM</item>
+        <item>1:00AM</item>
+        <item>2:00AM</item>
+        <item>3:00AM</item>
+        <item>4:00AM</item>
+        <item>5:00AM</item>
+        <item>6:00AM</item>
+        <item>7:00AM</item>
+        <item>8:00AM</item>
+        <item>9:00AM</item>
+        <item>10:00AM</item>
+        <item>11:00AM</item>
+        <item>12:00PM</item>
+        <item>1:00PM</item>
+        <item>2:00PM</item>
+        <item>3:00PM</item>
+        <item>4:00PM</item>
+        <item>5:00PM</item>
+        <item>6:00PM</item>
+        <item>7:00PM</item>
+        <item>8:00PM</item>
+        <item>9:00PM</item>
+        <item>10:00PM</item>
+        <item>11:00PM</item>
+    </string-array>
+</resources>

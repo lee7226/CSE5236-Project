@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
         mNewMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,CreateMeetingActivity.class));
+                startActivity(new Intent(MainActivity.this,StartDateActivity.class));
+                finish();
             }
         });
     }
@@ -108,10 +109,7 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
             confirmDelete();
         }else if(id == R.id.action_update_displayname){
             updateDisplayNameDialog();
-        } //else if(id == R.id.action_create_meeting) {
-          //  Log.i(TAG, "about to create new meeting");
-          //  createNewMeeting();
-        //}
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -195,8 +193,6 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
         });
     }
 
-
-
     private void queryAndUpdateDatabaseUserDisplayName() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -270,6 +266,4 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
             }
         });
     }
-
-
 }
