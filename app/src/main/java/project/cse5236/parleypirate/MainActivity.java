@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,11 +38,27 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
     public static final String SUCCESSFULLY_DELETED_ACCOUNT = "Successfully deleted account";
     public static final String SUCCESSFULLY_LOGGED_OUT = "Successfully logged out";
 
+    private Button mNewMeetingButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("MainActivity",getString(R.string.onCreateLog));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        if(intent != null && intent.hasExtra(getString(R.string.snackbar))){
+            Snackbar.make(findViewById(R.id.main_activity_coordinator_layout), (String) intent.getExtras().get(getString(R.string.snackbar)), Snackbar.LENGTH_SHORT).show();
+        }
+
+        mNewMeetingButton = findViewById(R.id.button_new_meeting);
+        mNewMeetingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,StartDateActivity.class));
+                finish();
+            }
+        });
     }
 
     @Override
@@ -173,8 +192,6 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
             }
         });
     }
-
-
 
     private void queryAndUpdateDatabaseUserDisplayName() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
