@@ -29,6 +29,7 @@ public class MeetingTimeActivity extends AppCompatActivity {
     private static final int HOUR_TO_MS_CONVERSION = 3600000;
 
     private Button mCreateMeetingButton;
+    private Button mSetLocationButton;
     private Spinner mEndTimeSpinner;
     private Spinner mStartTimeSpinner;
 
@@ -46,6 +47,17 @@ public class MeetingTimeActivity extends AppCompatActivity {
         mStartTimeSpinner.setAdapter(adapter);
         mEndTimeSpinner.setAdapter(adapter);
 
+        mSetLocationButton = findViewById(R.id.button_set_location);
+        mSetLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                if(id==R.id.button_set_location) {
+                    Intent setLocationIntent = new Intent(MeetingTimeActivity.this,SelectLocationActivity.class);
+                    startActivity(setLocationIntent);
+                }
+            }
+        });
 
         mCreateMeetingButton = findViewById(R.id.button_create_meeting);
         mCreateMeetingButton.setOnClickListener(new View.OnClickListener() {
@@ -57,11 +69,8 @@ public class MeetingTimeActivity extends AppCompatActivity {
                         createMeeting();
                     }else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
-                        builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //do nothing
-                            }
+                        builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            //do nothing
                         }).create().show();
                     }
                 }
@@ -86,21 +95,13 @@ public class MeetingTimeActivity extends AppCompatActivity {
 
             db.collection("meetings")
                     .add(meeting.toJson())
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @SuppressLint("LogNotTimber")
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                            returnToMenu("Arr!  Successfully created a parley!");
-                        }
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        returnToMenu("Arr!  Successfully created a parley!");
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @SuppressLint("LogNotTimber")
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                            returnToMenu("Failed to create parley, shiver me timbers! Please try again later.");
-                        }
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error adding document", e);
+                        returnToMenu("Failed to create parley, shiver me timbers! Please try again later.");
                     });
         }
     }
