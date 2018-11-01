@@ -1,9 +1,11 @@
 package project.cse5236.parleypirate;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +19,6 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class MeetingTimeActivity extends AppCompatActivity {
@@ -52,7 +53,17 @@ public class MeetingTimeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int id = v.getId();
                 if(id==R.id.button_create_meeting) {
-                    createMeeting();
+                    if(mStartTimeSpinner.getSelectedItemId()<mEndTimeSpinner.getSelectedItemId()) {
+                        createMeeting();
+                    }else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
+                        builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        }).create().show();
+                    }
                 }
             }
         });
@@ -65,9 +76,9 @@ public class MeetingTimeActivity extends AppCompatActivity {
             //convert the times to appropriate Timestamps
 
             Date startDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
-            startDate.setTime(startDate.getTime()+getTimeInMs(mStartTimeSpinner.getSelectedItem().toString()));
+            startDate.setTime(startDate.getTime()+getTimeInMs(mStartTimeSpinner.getSelectedItemPosition()));
             Date endDate = (Date) callingIntent.getExtras().get(getString(R.string.end_date));
-            endDate.setTime(endDate.getTime()+getTimeInMs(mEndTimeSpinner.getSelectedItem().toString()));
+            endDate.setTime(endDate.getTime()+getTimeInMs(mEndTimeSpinner.getSelectedItemPosition()));
             //create the meeting object
             Meeting meeting = new Meeting(new Timestamp(startDate),new Timestamp(endDate));
 
@@ -94,12 +105,7 @@ public class MeetingTimeActivity extends AppCompatActivity {
         }
     }
 
-    private long getTimeInMs(String time) {
-        String hourStr = time.substring(0,time.indexOf(":"));
-        int hour = Integer.parseInt(hourStr) % 12;
-        if(time.contains("PM")){
-            hour+=12;
-        }
+    private long getTimeInMs(int hour) {
         return hour * HOUR_TO_MS_CONVERSION;
     }
 
