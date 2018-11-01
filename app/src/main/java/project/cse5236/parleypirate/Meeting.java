@@ -38,7 +38,7 @@ public class Meeting {
     public HashMap<String,Object> toJson(){
         HashMap<String,Object> map = new HashMap<>();
         map.put("starttime",startTime);
-        map.put("endtime",startTime);
+        map.put("endtime",endTime);
         map.put("availabilities",availabilities);
         map.put("members",members);
         map.put("location",location);

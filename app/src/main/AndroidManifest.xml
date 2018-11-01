@@ -28,7 +28,8 @@
         <activity android:name=".MeetingTimeActivity" />
         <activity android:name=".EnterAvailabilityActivity" />
         <activity android:name=".StartDateActivity" />
-        <activity android:name=".EndDateActivity"></activity>
+        <activity android:name=".EndDateActivity" />
+        <activity android:name=".SelectLocationActivity"></activity>
     </application>
 
 </manifest>

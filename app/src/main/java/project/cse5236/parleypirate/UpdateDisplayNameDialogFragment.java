@@ -28,7 +28,7 @@ public class UpdateDisplayNameDialogFragment extends DialogFragment {
                         mListener.onUpdateDisplayNameDialogFragmentPositiveClick(UpdateDisplayNameDialogFragment.this,String.valueOf(mEditText.getText()));
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //do nothing
                     }

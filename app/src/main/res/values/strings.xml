@@ -31,11 +31,8 @@
     <string name="snackbar">Snackbar</string>
     <string name="action_delete_account">Delete account</string>
     <string name="delete_account_confirmation">Are you sure you want to delete your account?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="action_update_displayname">Update display name</string>
     <string name="change">Confirm change</string>
-    <string name="cancel">Cancel</string>
     <string name="action_create_meeting">Create new Parley</string>
 
     <string name="starttime_label">Start Time</string>
@@ -52,4 +49,6 @@
     <string name="select_enddate_label">Select End Date</string>
     <string name="end_date">endDate</string>
     <string name="start_date">startDate</string>
+    <string name="error_invalid_time_message">End time must be after start time</string>
+    <string name="error_invalid_time_title">Invalid times</string>
 </resources>
