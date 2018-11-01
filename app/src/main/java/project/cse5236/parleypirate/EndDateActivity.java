@@ -30,6 +30,11 @@ public class EndDateActivity extends AppCompatActivity {
                 gc.set(year,month,dayOfMonth);
             }
         });
+        Intent callingIntent = getIntent();
+        if(callingIntent != null && callingIntent.hasExtra(getString(R.string.start_date))) {
+            Date minDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
+            mCalendarView.setMinDate(minDate.getTime());
+        }
 
         mNextButton = findViewById(R.id.enddate_next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +46,12 @@ public class EndDateActivity extends AppCompatActivity {
     }
 
     private void startTimeActivity(){
+        //clear out the clock time
+        gc.clear(GregorianCalendar.HOUR);
+        gc.clear(GregorianCalendar.MINUTE);
+        gc.clear(GregorianCalendar.SECOND);
+        gc.clear(GregorianCalendar.MILLISECOND);
+        gc.clear(GregorianCalendar.AM_PM);
         Intent callingIntent = getIntent();
         if(callingIntent != null && callingIntent.hasExtra(getString(R.string.start_date))){
             Intent enterTimesIntent = new Intent(EndDateActivity.this,MeetingTimeActivity.class);

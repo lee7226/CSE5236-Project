@@ -18,6 +18,7 @@ public class StartDateActivity extends AppCompatActivity {
 
     private GregorianCalendar gc = new GregorianCalendar();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,12 @@ public class StartDateActivity extends AppCompatActivity {
     }
 
     private void endDateActivity(){
+        //clear out the clock time
+        gc.clear(GregorianCalendar.HOUR);
+        gc.clear(GregorianCalendar.MINUTE);
+        gc.clear(GregorianCalendar.SECOND);
+        gc.clear(GregorianCalendar.MILLISECOND);
+        gc.clear(GregorianCalendar.AM_PM);
         Intent endDateIntent = new Intent(StartDateActivity.this,EndDateActivity.class);
         endDateIntent.putExtra(getString(R.string.start_date),gc.getTime());
         startActivity(endDateIntent);
