@@ -51,9 +51,8 @@ public class FirebaseUIActivity extends AppCompatActivity {
         }
 
         mLoginButton = findViewById(R.id.login_button);
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mLoginButton.setOnClickListener(v -> {
+            if(v.getId()==R.id.login_button) {
                 createSignInIntent();
             }
         });
@@ -86,22 +85,18 @@ public class FirebaseUIActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 CollectionReference usersRef = db.collection("users");
                 final Query query = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
-                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            QuerySnapshot qs = task.getResult();
-                            if (qs.size()>0) {
-                                Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-                            } else {
-                                Log.d(TAG, "Creating user");
-                                createUser();
-                            }
-                            goToMenu();
-                        }else{
-                            Log.d(TAG, "get failed with ", task.getException());
+                query.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        QuerySnapshot qs = task.getResult();
+                        if (qs.size()>0) {
+                            Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                        } else {
+                            Log.d(TAG, "Creating user");
+                            createUser();
                         }
+                        goToMenu();
+                    }else{
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
                 });
             } else {
@@ -131,20 +126,8 @@ public class FirebaseUIActivity extends AppCompatActivity {
         userAsMap.put("email",user.getEmail());
         db.collection("users")
                 .add(userAsMap)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
 
     }
 

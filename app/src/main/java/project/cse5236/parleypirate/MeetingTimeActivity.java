@@ -48,31 +48,25 @@ public class MeetingTimeActivity extends AppCompatActivity {
         mEndTimeSpinner.setAdapter(adapter);
 
         mSetLocationButton = findViewById(R.id.button_set_location);
-        mSetLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                if(id==R.id.button_set_location) {
-                    Intent setLocationIntent = new Intent(MeetingTimeActivity.this,SelectLocationActivity.class);
-                    startActivity(setLocationIntent);
-                }
+        mSetLocationButton.setOnClickListener(v -> {
+            int id = v.getId();
+            if(id==R.id.button_set_location) {
+                Intent setLocationIntent = new Intent(MeetingTimeActivity.this,SelectLocationActivity.class);
+                startActivity(setLocationIntent);
             }
         });
 
         mCreateMeetingButton = findViewById(R.id.button_create_meeting);
-        mCreateMeetingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                if(id==R.id.button_create_meeting) {
-                    if(mStartTimeSpinner.getSelectedItemId()<mEndTimeSpinner.getSelectedItemId()) {
-                        createMeeting();
-                    }else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
-                        builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            //do nothing
-                        }).create().show();
-                    }
+        mCreateMeetingButton.setOnClickListener(v -> {
+            int id = v.getId();
+            if(id==R.id.button_create_meeting) {
+                if(mStartTimeSpinner.getSelectedItemId()<mEndTimeSpinner.getSelectedItemId()) {
+                    createMeeting();
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
+                    builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        //do nothing
+                    }).create().show();
                 }
             }
         });

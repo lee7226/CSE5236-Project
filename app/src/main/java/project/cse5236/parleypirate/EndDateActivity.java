@@ -24,12 +24,7 @@ public class EndDateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_end_date);
 
         mCalendarView = findViewById(R.id.enddate_calendar);
-        mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                gc.set(year,month,dayOfMonth);
-            }
-        });
+        mCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> gc.set(year,month,dayOfMonth));
         Intent callingIntent = getIntent();
         if(callingIntent != null && callingIntent.hasExtra(getString(R.string.start_date))) {
             Date minDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
@@ -37,9 +32,8 @@ public class EndDateActivity extends AppCompatActivity {
         }
 
         mNextButton = findViewById(R.id.enddate_next_button);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mNextButton.setOnClickListener(v -> {
+            if(v.getId()==R.id.enddate_next_button) {
                 startTimeActivity();
             }
         });

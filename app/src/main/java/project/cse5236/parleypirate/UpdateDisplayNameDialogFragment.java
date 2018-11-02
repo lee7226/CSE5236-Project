@@ -23,15 +23,10 @@ public class UpdateDisplayNameDialogFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_update_displayname,null);
         mEditText = v.findViewById(R.id.update_display_name_edittext);
         builder.setMessage(R.string.action_update_displayname)
-                .setPositiveButton(R.string.change, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.onUpdateDisplayNameDialogFragmentPositiveClick(UpdateDisplayNameDialogFragment.this,String.valueOf(mEditText.getText()));
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //do nothing
-                    }
+                .setPositiveButton(R.string.change, (dialog, id) ->
+                        mListener.onUpdateDisplayNameDialogFragmentPositiveClick(UpdateDisplayNameDialogFragment.this,String.valueOf(mEditText.getText())))
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    //do nothing
                 }).setView(v);
         return builder.create();
     }

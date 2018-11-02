@@ -25,17 +25,11 @@ public class StartDateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_date);
 
         mCalendarView = findViewById(R.id.startdate_calendar);
-        mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                gc.set(year,month,dayOfMonth);
-            }
-        });
+        mCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> gc.set(year,month,dayOfMonth));
 
         mNextButton = findViewById(R.id.startdate_next_button);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mNextButton.setOnClickListener(v -> {
+            if(v.getId()==R.id.startdate_next_button) {
                 endDateActivity();
             }
         });
