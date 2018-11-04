@@ -5,12 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelectLocationActivity">
-
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/location_map_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
-        mapbox:mapbox_cameraZoom="11" />
+        android:weightSum="100"
+        android:orientation="vertical">
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/location_map_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+            mapbox:mapbox_cameraZoom="11"
+            android:layout_weight="95">
+        </com.mapbox.mapboxsdk.maps.MapView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            tools:text="@string/button_set_location" />
+    </LinearLayout>
+
 
 </RelativeLayout>

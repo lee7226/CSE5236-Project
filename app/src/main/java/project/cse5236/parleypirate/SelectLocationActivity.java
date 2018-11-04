@@ -2,64 +2,101 @@ package project.cse5236.parleypirate;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.constants.MapboxConstants;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+
 public class SelectLocationActivity extends AppCompatActivity {
 
     private static final String TAG = "SetLocationActivity";
     private static final int ACCESS_FINE_LOCATION_PERMISSION_CODE = 1;
+    private static final String LAYER_ID = "location_selection_layer";
+    private static final String SOURCE_ID = "vector-source";
     private MapView mMapView;
 
     //default latitude and longitude is Ohio Stadium :^)
-    private static final double DEFAULT_LAT = 40.001633;
-    private static final double DEFAULT_LONG = -83.019707;
+    private static final double DEFAULT_USER_LAT = 40.001633;
+    private static final double DEFAULT_USER_LONG = -83.019707;
 
     private LocationComponent locationComponent;
 
-    private double latitude = DEFAULT_LAT;
-    private double longitude = DEFAULT_LONG;
+    private double latitude = DEFAULT_USER_LAT;
+    private double longitude = DEFAULT_USER_LONG;
 
     private MapboxMap mMapboxMap;
+    private Button mSetLocationButton;
+    private ImageView dropPinView;
 
     private static final double zoom = 14.5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSetLocationButton = findViewById(R.id.button_set_location);
+        mSetLocationButton.setOnClickListener(v-> {
+            if (v.getId() == R.id.button_set_location) {
+                setLocation();
+            }
+        });
+
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_select_location);
         mMapView = findViewById(R.id.location_map_view);
 
         mMapView.onCreate(savedInstanceState);
+
         mMapView.getMapAsync(mapboxMap -> {
             mMapboxMap = mapboxMap;
             locationComponent = mapboxMap.getLocationComponent();
             activateLocationComponent();
-            /*
-            mMapboxMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
-                    .title(getString(R.string.title_meeting_location))
-                    .snippet(getString(R.string.x_marks_the_spot));
-                    */
             mMapboxMap.setCameraPosition(
                     new CameraPosition.Builder().target(
                             new LatLng(latitude,longitude)).zoom(zoom).build());
-        });
 
+            // Create drop pin using custom image
+            dropPinView = new ImageView(this);
+            dropPinView.setImageResource(R.drawable.ic_x_marks_the_spot);
+
+            // Statically Set drop pin in center of screen
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER);
+            float density = getResources().getDisplayMetrics().density;
+            params.bottomMargin = (int) (12 * density);
+            dropPinView.setLayoutParams(params);
+            mMapView.addView(dropPinView);
+        });
+    }
+
+    private void setLocation() {
+        // Get LatLng of selected location
+        LatLng position = mMapboxMap.getProjection().fromScreenLocation(
+                new PointF(dropPinView.getLeft() + (dropPinView.getWidth() / 2),
+                        dropPinView.getBottom()));
+        GeoPoint location = new GeoPoint(position.getLatitude(),position.getLongitude());
+        meeting.setLocation(location);
 
     }
 
@@ -112,7 +149,7 @@ public class SelectLocationActivity extends AppCompatActivity {
             locationComponent.activateLocationComponent(this);
             Location lastKnowLoc = locationComponent.getLastKnownLocation();
             if(lastKnowLoc!=null) {
-                setLatLong(lastKnowLoc.getLatitude(), lastKnowLoc.getLongitude());
+                setUserLatLong(lastKnowLoc.getLatitude(), lastKnowLoc.getLongitude());
             }
             locationComponent.setLocationComponentEnabled(true);
         } else {
@@ -147,7 +184,7 @@ public class SelectLocationActivity extends AppCompatActivity {
         }
     }
 
-    private void setLatLong(double lat, double longi){
+    private void setUserLatLong(double lat, double longi){
         latitude = lat;
         longitude = longi;
     }

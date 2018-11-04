@@ -52,6 +52,7 @@ public class MeetingTimeActivity extends AppCompatActivity {
             int id = v.getId();
             if(id==R.id.button_set_location) {
                 Intent setLocationIntent = new Intent(MeetingTimeActivity.this,SelectLocationActivity.class);
+                ///TODO send meeting object to the activity
                 startActivity(setLocationIntent);
             }
         });
