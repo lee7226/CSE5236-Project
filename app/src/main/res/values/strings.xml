@@ -51,8 +51,17 @@
     <string name="start_date">startDate</string>
     <string name="error_invalid_time_message">End time must be after start time</string>
     <string name="error_invalid_time_title">Invalid times</string>
-    <string name="button_set_location">Set location</string>
+    <string name="button_set_location_and_create_meeting">Set location and create parley!</string>
+    <string name="button_select_location">Select location</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiZGllc2VsZCIsImEiOiJjam55NTZhc2ExODN2M3Byd2ZzeTIyNzMzIn0.yi3DMDdq6yRq416WWW_lgw</string>
     <string name="title_meeting_location">Parley Location</string>
     <string name="x_marks_the_spot">X marks the spot!</string>
+    <string name="error_getting_intent_extras">Error getting date from previous activity. Returning to menu.</string>
+    <string name="error_importing_time">Error importing time</string>
+    <string name="snackbar_failed_to_create">Failed to create parley, shiver me timbers! Please try again later.</string>
+    <string name="button_select_dates">Select dates</string>
+    <string name="title_label">Parley Title</string>
+    <string name="title">title</string>
+    <string name="error_empty_title_message">Please enter a title</string>
+    <string name="error_empty_title_title">Invalid title</string>
 </resources>

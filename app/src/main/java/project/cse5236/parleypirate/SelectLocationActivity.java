@@ -1,6 +1,7 @@
 package project.cse5236.parleypirate;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Location;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -24,8 +27,8 @@ import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import java.util.Date;
+
 
 public class SelectLocationActivity extends AppCompatActivity {
 
@@ -45,23 +48,29 @@ public class SelectLocationActivity extends AppCompatActivity {
     private double longitude = DEFAULT_USER_LONG;
 
     private MapboxMap mMapboxMap;
-    private Button mSetLocationButton;
+    private Button mSetLocationAndCreateMeetingButton;
     private ImageView dropPinView;
 
     private static final double zoom = 14.5;
 
+    private GeoPoint location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSetLocationButton = findViewById(R.id.button_set_location);
-        mSetLocationButton.setOnClickListener(v-> {
-            if (v.getId() == R.id.button_set_location) {
+        setContentView(R.layout.activity_select_location);
+
+        mSetLocationAndCreateMeetingButton = findViewById(R.id.button_set_location_and_create_meeting);
+        mSetLocationAndCreateMeetingButton.setOnClickListener(v-> {
+            if (v.getId() == R.id.button_set_location_and_create_meeting) {
                 setLocation();
+                createMeeting();
             }
         });
+        Log.d(TAG,"the text of the button is:"+mSetLocationAndCreateMeetingButton.getText().toString());
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
-        setContentView(R.layout.activity_select_location);
+
         mMapView = findViewById(R.id.location_map_view);
 
         mMapView.onCreate(savedInstanceState);
@@ -87,7 +96,46 @@ public class SelectLocationActivity extends AppCompatActivity {
             params.bottomMargin = (int) (12 * density);
             dropPinView.setLayoutParams(params);
             mMapView.addView(dropPinView);
+
+
         });
+    }
+
+    private void createMeeting() {
+        Intent callingIntent = getIntent();
+        if(callingIntent != null && (callingIntent.hasExtra(getString(R.string.start_date)) && getIntent().hasExtra(getString(R.string.end_date)) && getIntent().hasExtra(getString(R.string.title)))){
+            //add the correct times to the dates
+            Date startDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
+            Date endDate = (Date) callingIntent.getExtras().get(getString(R.string.end_date));
+            String title = (String) callingIntent.getExtras().get(getString(R.string.title));
+            //create the meeting object
+            Meeting meeting = new Meeting();
+            meeting.setStartTime(new Timestamp(startDate));
+            meeting.setEndTime(new Timestamp(endDate));
+            meeting.setLocation(location);
+            meeting.setTitle(title);
+            ///TODO add user to meeting
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("meetings")
+                    .add(meeting.toJson())
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        returnToMenu("Arr!  Successfully created a parley!");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error adding document", e);
+                        returnToMenu(getString(R.string.snackbar_failed_to_create));
+                    });
+        }
+    }
+
+    private void returnToMenu(String message) {
+        Intent menuIntent = new Intent(SelectLocationActivity.this, MainActivity.class);
+        menuIntent.putExtra(getString(R.string.snackbar),message);
+        startActivity(menuIntent);
+        finish();
     }
 
     private void setLocation() {
@@ -95,9 +143,7 @@ public class SelectLocationActivity extends AppCompatActivity {
         LatLng position = mMapboxMap.getProjection().fromScreenLocation(
                 new PointF(dropPinView.getLeft() + (dropPinView.getWidth() / 2),
                         dropPinView.getBottom()));
-        GeoPoint location = new GeoPoint(position.getLatitude(),position.getLongitude());
-        meeting.setLocation(location);
-
+        location = new GeoPoint(position.getLatitude(),position.getLongitude());
     }
 
     @Override

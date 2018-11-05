@@ -10,14 +10,22 @@ public class Meeting {
     private static final String USERS = "/users/";
     private static final String AVAILABILITIES = "/availabilities/";
     private Timestamp startTime;
+
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
+    }
+
     private Timestamp endTime;
     private ArrayList<String> availabilities;
     private ArrayList<String> members;
     private GeoPoint location;
+    private String title;
 
-    public Meeting(Timestamp startTime,Timestamp endTime){
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public Meeting(){
         availabilities = new ArrayList<>();
         members = new ArrayList<>();
         location = new GeoPoint(0,0);
@@ -42,7 +50,12 @@ public class Meeting {
         map.put("availabilities",availabilities);
         map.put("members",members);
         map.put("location",location);
+        map.put("title",title);
         return map;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
     }
 
 }
