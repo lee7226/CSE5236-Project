@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
     public static final String SUCCESSFULLY_LOGGED_OUT = "Successfully logged out";
 
     private Button mNewMeetingButton;
+    private Button mEnterAvailabilityButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +61,33 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
                 finish();
             }
         });
+
+        mEnterAvailabilityButton = findViewById(R.id.button_enter_availability);
+        mEnterAvailabilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callingIntent = getIntent();
+                if (callingIntent != null) {
+                    Intent enterAvailability  = new Intent(MainActivity.this, AvailabilityActivity.class);
+                    startActivity(new Intent(MainActivity.this, AvailabilityActivity.class));
+                    finish();
+                }
+            }
+        });
     }
 
     @Override
     public void onStart() {
         Log.d("MainActivity",getString(R.string.onStartLog));
+
+        Availability test = new Availability();
+        //test.StoreAvailability("01101010101010101010101010");
+        String aval = test.GetAvailability("test");
+//        Toast.makeText(getApplicationContext(), "aval = " + aval,
+//                Toast.LENGTH_LONG).show();
+        aval = test.GetAvailability("esgoiesgoiresf");
+//        Toast.makeText(getApplicationContext(), "aval = " + aval,
+//                Toast.LENGTH_LONG).show();
         super.onStart();
     }
     @Override

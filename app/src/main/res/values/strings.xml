@@ -51,4 +51,6 @@
     <string name="start_date">startDate</string>
     <string name="error_invalid_time_message">End time must be after start time</string>
     <string name="error_invalid_time_title">Invalid times</string>
+
+    <string name="string_enter_availability">Enter availability</string>
 </resources>
