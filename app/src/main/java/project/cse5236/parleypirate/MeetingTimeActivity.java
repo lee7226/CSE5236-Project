@@ -1,23 +1,12 @@
 package project.cse5236.parleypirate;
 
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 
@@ -28,9 +17,12 @@ public class MeetingTimeActivity extends AppCompatActivity {
 
     private static final int HOUR_TO_MS_CONVERSION = 3600000;
 
-    private Button mCreateMeetingButton;
+    private Button mSelectLocationButton;
     private Spinner mEndTimeSpinner;
     private Spinner mStartTimeSpinner;
+
+    private Date startDate;
+    private Date endDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,62 +38,42 @@ public class MeetingTimeActivity extends AppCompatActivity {
         mStartTimeSpinner.setAdapter(adapter);
         mEndTimeSpinner.setAdapter(adapter);
 
-
-        mCreateMeetingButton = findViewById(R.id.button_create_meeting);
-        mCreateMeetingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                if(id==R.id.button_create_meeting) {
-                    if(mStartTimeSpinner.getSelectedItemId()<mEndTimeSpinner.getSelectedItemId()) {
-                        createMeeting();
-                    }else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
-                        builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //do nothing
-                            }
-                        }).create().show();
-                    }
+        mSelectLocationButton = findViewById(R.id.button_select_location);
+        mSelectLocationButton.setOnClickListener(v -> {
+            int id = v.getId();
+            if(id==R.id.button_select_location) {
+                if(mStartTimeSpinner.getSelectedItemId()<mEndTimeSpinner.getSelectedItemId()) {
+                    startSelectLocationActivity();
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
+                    builder.setMessage(R.string.error_invalid_time_message).setTitle(R.string.error_invalid_time_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        //do nothing
+                    }).create().show();
                 }
+
             }
         });
     }
 
-
-    public void createMeeting(){
+    public void startSelectLocationActivity(){
         Intent callingIntent = getIntent();
-        if(callingIntent != null && (callingIntent.hasExtra(getString(R.string.start_date)) && getIntent().hasExtra(getString(R.string.end_date)))){
-            //convert the times to appropriate Timestamps
-
-            Date startDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
+        if(callingIntent != null && (callingIntent.hasExtra(getString(R.string.start_date)) && getIntent().hasExtra(getString(R.string.end_date)) && getIntent().hasExtra(getString(R.string.title)))){
+            //add the correct times to the dates
+            startDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
             startDate.setTime(startDate.getTime()+getTimeInMs(mStartTimeSpinner.getSelectedItemPosition()));
-            Date endDate = (Date) callingIntent.getExtras().get(getString(R.string.end_date));
+            endDate = (Date) callingIntent.getExtras().get(getString(R.string.end_date));
             endDate.setTime(endDate.getTime()+getTimeInMs(mEndTimeSpinner.getSelectedItemPosition()));
-            //create the meeting object
-            Meeting meeting = new Meeting(new Timestamp(startDate),new Timestamp(endDate));
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            db.collection("meetings")
-                    .add(meeting.toJson())
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @SuppressLint("LogNotTimber")
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                            returnToMenu("Arr!  Successfully created a parley!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @SuppressLint("LogNotTimber")
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                            returnToMenu("Failed to create parley, shiver me timbers! Please try again later.");
-                        }
-                    });
+            Intent setLocationIntent = new Intent(MeetingTimeActivity.this,SelectLocationActivity.class);
+            setLocationIntent.putExtra(getString(R.string.title),(String)callingIntent.getExtras().get(getString(R.string.title)));
+            setLocationIntent.putExtra(getString(R.string.start_date),startDate);
+            setLocationIntent.putExtra(getString(R.string.end_date),endDate);
+            startActivity(setLocationIntent);
+            finish();
+        }else{
+            //somehow the intent didn't have the dates
+            AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
+            builder.setMessage(R.string.error_getting_intent_extras).setTitle(R.string.error_importing_time)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> returnToMenu(getString(R.string.snackbar_failed_to_create))).create().show();
         }
     }
 
