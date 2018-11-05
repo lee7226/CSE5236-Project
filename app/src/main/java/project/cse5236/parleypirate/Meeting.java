@@ -1,7 +1,11 @@
 package project.cse5236.parleypirate;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.model.Document;
+import com.google.firebase.firestore.model.DocumentKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +24,12 @@ public class Meeting {
     }
 
     private Timestamp endTime;
-    private ArrayList<String> availabilities;
-    private ArrayList<String> members;
+    private ArrayList<DocumentReference> availabilities;
+    private ArrayList<DocumentReference> members;
     private GeoPoint location;
     private String title;
+
+    private FirebaseFirestore db;
 
     public Meeting(){
         availabilities = new ArrayList<>();
@@ -32,11 +38,13 @@ public class Meeting {
     }
 
     public void addMember(String memberId){
-        members.add(USERS+memberId);
+        db = FirebaseFirestore.getInstance();
+        members.add(db.document(USERS+memberId));
     }
 
     public void addAvailability(String availabilityId){
-        availabilities.add(AVAILABILITIES+availabilityId);
+        db = FirebaseFirestore.getInstance();
+        availabilities.add(db.document(AVAILABILITIES+availabilityId));
     }
 
     public void setLocation(GeoPoint location){

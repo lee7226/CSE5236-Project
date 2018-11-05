@@ -82,6 +82,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
                         QuerySnapshot qs = task.getResult();
                         if (qs.size()>0) {
                             Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                            UserDatabaseId.setDbId(qs.getDocuments().get(0).getId());
                         } else {
                             Log.d(TAG, "Creating user");
                             createUser();
@@ -118,7 +119,10 @@ public class FirebaseUIActivity extends AppCompatActivity {
         userAsMap.put("email",user.getEmail());
         db.collection("users")
                 .add(userAsMap)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    UserDatabaseId.setDbId(documentReference.getId());
+                })
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
 
     }

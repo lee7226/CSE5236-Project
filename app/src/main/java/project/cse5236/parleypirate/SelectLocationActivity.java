@@ -114,7 +114,7 @@ public class SelectLocationActivity extends AppCompatActivity {
             meeting.setEndTime(new Timestamp(endDate));
             meeting.setLocation(location);
             meeting.setTitle(title);
-            ///TODO add user to meeting
+            meeting.addMember(UserDatabaseId.getDbId());
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
