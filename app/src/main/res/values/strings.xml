@@ -64,4 +64,5 @@
     <string name="title">title</string>
     <string name="error_empty_title_message">Please enter a title</string>
     <string name="error_empty_title_title">Invalid title</string>
+    <string name="string_view_meetings">View Parleys!</string>
 </resources>

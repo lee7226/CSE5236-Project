@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     public static final String SUCCESSFULLY_LOGGED_OUT = "Successfully logged out";
 
     private Button mNewMeetingButton;
+    private Button mViewMeetingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,13 @@ public class MainActivity extends AppCompatActivity
         mNewMeetingButton.setOnClickListener(v -> {
             if(v.getId()==R.id.button_new_meeting) {
                 startActivity(new Intent(MainActivity.this, MeetingTitleActivity.class));
+            }
+        });
+
+        mViewMeetingsButton = findViewById(R.id.button_view_meetings);
+        mViewMeetingsButton.setOnClickListener(v->{
+            if(v.getId()==R.id.button_view_meetings) {
+                startActivity(new Intent(MainActivity.this, ViewMeetingsActivity.class));
             }
         });
     }
