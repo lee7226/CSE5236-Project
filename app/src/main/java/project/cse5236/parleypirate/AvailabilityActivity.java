@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -174,6 +175,8 @@ public class AvailabilityActivity extends AppCompatActivity {
                         Log.d(TAG, "User not found");
                         createDatabaseAvailability(getOnScreenAvailability());
                     }
+                    Toast.makeText(getApplicationContext(), "Availability Saved!",
+                    Toast.LENGTH_LONG).show();
                 }else{
                     Log.d(TAG, "get failed with ", task.getException());
                 }
