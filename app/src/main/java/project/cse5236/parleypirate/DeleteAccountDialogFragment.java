@@ -3,7 +3,6 @@ package project.cse5236.parleypirate;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -16,15 +15,9 @@ public class DeleteAccountDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.delete_account_confirmation)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDeleteAccountDialogFragmentPositiveClick(DeleteAccountDialogFragment.this);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //do nothing
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, id) -> mListener.onDeleteAccountDialogFragmentPositiveClick(DeleteAccountDialogFragment.this))
+                .setNegativeButton(android.R.string.no, (dialog, id) -> {
+                    //do nothing
                 });
         // Create the AlertDialog object and return it
         return builder.create();
