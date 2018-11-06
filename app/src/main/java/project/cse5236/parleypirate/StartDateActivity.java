@@ -24,6 +24,8 @@ public class StartDateActivity extends AppCompatActivity {
 
         mCalendarView = findViewById(R.id.startdate_calendar);
 
+        mCalendarView.setMinDate(gc.getTimeInMillis());
+
         mCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> gc.set(year,month,dayOfMonth));
 
         mNextButton = findViewById(R.id.startdate_next_button);
@@ -37,11 +39,12 @@ public class StartDateActivity extends AppCompatActivity {
 
     private void endDateActivity(){
         //clear out the clock time
-        gc.clear(GregorianCalendar.HOUR);
-        gc.clear(GregorianCalendar.MINUTE);
-        gc.clear(GregorianCalendar.SECOND);
-        gc.clear(GregorianCalendar.MILLISECOND);
-        gc.clear(GregorianCalendar.AM_PM);
+        gc.set(GregorianCalendar.HOUR_OF_DAY,0);
+        gc.set(GregorianCalendar.HOUR,0);
+        gc.set(GregorianCalendar.MINUTE,0);
+        gc.set(GregorianCalendar.SECOND,0);
+        gc.set(GregorianCalendar.MILLISECOND,0);
+        gc.set(GregorianCalendar.AM_PM,0);
         Intent callingIntent = getIntent();
         if(callingIntent != null && callingIntent.hasExtra(getString(R.string.title))){
             Intent endDateIntent = new Intent(StartDateActivity.this,EndDateActivity.class);

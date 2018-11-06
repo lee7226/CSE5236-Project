@@ -34,8 +34,6 @@ public class SelectLocationActivity extends AppCompatActivity {
 
     private static final String TAG = "SetLocationActivity";
     private static final int ACCESS_FINE_LOCATION_PERMISSION_CODE = 1;
-    private static final String LAYER_ID = "location_selection_layer";
-    private static final String SOURCE_ID = "vector-source";
     private MapView mMapView;
 
     //default latitude and longitude is Ohio Stadium :^)

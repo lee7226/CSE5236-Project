@@ -41,11 +41,12 @@ public class EndDateActivity extends AppCompatActivity {
 
     private void startTimeActivity(){
         //clear out the clock time
-        gc.clear(GregorianCalendar.HOUR);
-        gc.clear(GregorianCalendar.MINUTE);
-        gc.clear(GregorianCalendar.SECOND);
-        gc.clear(GregorianCalendar.MILLISECOND);
-        gc.clear(GregorianCalendar.AM_PM);
+        gc.set(GregorianCalendar.HOUR_OF_DAY,0);
+        gc.set(GregorianCalendar.HOUR,0);
+        gc.set(GregorianCalendar.MINUTE,0);
+        gc.set(GregorianCalendar.SECOND,0);
+        gc.set(GregorianCalendar.MILLISECOND,0);
+        gc.set(GregorianCalendar.AM_PM,0);
         Intent callingIntent = getIntent();
         if(callingIntent != null && (callingIntent.hasExtra(getString(R.string.start_date))&&callingIntent.hasExtra(getString(R.string.title)))){
             Intent enterTimesIntent = new Intent(EndDateActivity.this,MeetingTimeActivity.class);

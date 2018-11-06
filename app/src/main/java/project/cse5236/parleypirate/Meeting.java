@@ -4,28 +4,19 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.model.Document;
-import com.google.firebase.firestore.model.DocumentKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Meeting {
     private static final String USERS = "/users/";
     private static final String AVAILABILITIES = "/availabilities/";
     private Timestamp startTime;
 
-    public void setStartTime(Timestamp startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
-    }
-
     private Timestamp endTime;
-    private ArrayList<DocumentReference> availabilities;
-    private ArrayList<DocumentReference> members;
+    private List<DocumentReference> availabilities;
+    private List<DocumentReference> members;
     private GeoPoint location;
     private String title;
 
@@ -35,6 +26,14 @@ public class Meeting {
         availabilities = new ArrayList<>();
         members = new ArrayList<>();
         location = new GeoPoint(0,0);
+    }
+
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
     public void addMember(String memberId){
