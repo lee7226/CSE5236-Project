@@ -33,7 +33,8 @@
         <activity android:name=".EndDateActivity" />
         <activity android:name=".SelectLocationActivity" />
         <activity android:name=".MeetingTitleActivity" />
-        <activity android:name=".ViewMeetingsActivity"></activity>
+        <activity android:name=".ViewMeetingsActivity" />
+        <activity android:name=".InviteMembersActivity"></activity>
     </application>
 
 </manifest>

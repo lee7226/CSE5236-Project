@@ -1,5 +1,6 @@
 package project.cse5236.parleypirate;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +54,9 @@ public class ViewMeetingsActivity extends AppCompatActivity {
                     mListView.setOnItemClickListener((parent, view, position, id) -> {
                         Object o = mListView.getItemAtPosition(position);
                         DocumentSnapshot ds = (DocumentSnapshot) o;
-                        ///TODO start activity for this document
+                        Intent inviteUsersIntent = new Intent(ViewMeetingsActivity.this,InviteMembersActivity.class);
+                        inviteUsersIntent.putExtra("meetingId",ds.getId());
+                        startActivity(inviteUsersIntent);
                     });
                 }
             } else {

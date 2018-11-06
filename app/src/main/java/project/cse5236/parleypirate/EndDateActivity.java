@@ -28,6 +28,7 @@ public class EndDateActivity extends AppCompatActivity {
         if(callingIntent != null && callingIntent.hasExtra(getString(R.string.start_date))) {
             Date minDate = (Date)callingIntent.getExtras().get(getString(R.string.start_date));
             mCalendarView.setMinDate(minDate.getTime());
+            gc.setTime(minDate);
         }
 
         mNextButton = findViewById(R.id.enddate_next_button);
@@ -51,7 +52,6 @@ public class EndDateActivity extends AppCompatActivity {
             enterTimesIntent.putExtra(getString(R.string.end_date),gc.getTime());
             enterTimesIntent.putExtra(getString(R.string.start_date),(Date)callingIntent.getExtras().get(getString(R.string.start_date)));
             enterTimesIntent.putExtra(getString(R.string.title),(String)callingIntent.getExtras().get(getString(R.string.title)));
-            enterTimesIntent.putExtra(getString(R.string.start_date),gc.getTime());
             startActivity(enterTimesIntent);
             finish();
         }else{

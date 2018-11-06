@@ -23,6 +23,7 @@ public class StartDateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_date);
 
         mCalendarView = findViewById(R.id.startdate_calendar);
+
         mCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> gc.set(year,month,dayOfMonth));
 
         mNextButton = findViewById(R.id.startdate_next_button);
