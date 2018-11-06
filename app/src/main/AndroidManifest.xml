@@ -31,6 +31,7 @@
         <activity android:name=".MeetingTimeActivity" />
         <activity android:name=".StartDateActivity" />
         <activity android:name=".EndDateActivity" />
+        <activity android:name=".AvailabilityActivity" />
         <activity android:name=".SelectLocationActivity" />
         <activity android:name=".MeetingTitleActivity" />
         <activity android:name=".ViewMeetingsActivity" />
