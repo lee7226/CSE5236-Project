@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements DeleteAccountDial
         String aval = test.GetAvailability("test");
 //        Toast.makeText(getApplicationContext(), "aval = " + aval,
 //                Toast.LENGTH_LONG).show();
-        aval = test.GetAvailability("esgoiesgoiresf");
+//        aval = test.GetAvailability("esgoiesgoiresf");
 //        Toast.makeText(getApplicationContext(), "aval = " + aval,
 //                Toast.LENGTH_LONG).show();
         super.onStart();
