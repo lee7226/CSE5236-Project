@@ -64,4 +64,18 @@
     <string name="title">title</string>
     <string name="error_empty_title_message">Please enter a title</string>
     <string name="error_empty_title_title">Invalid title</string>
+    <string name="string_view_meetings">View Parleys!</string>
+    <string name="users_placeholder"><![CDATA[<Users go here>]]></string>
+    <string name="invite_users_label">Enter user\'s email address</string>
+    <string name="invite_user_button">Invite User</string>
+    <string name="current_members">Current members:</string>
+    <string name="error_empty_invite_email">Please enter a valid email address</string>
+    <string name="error_empty_invite_email_title">Invalid email</string>
+    <string name="success_invite_member">Successfully added member %1s!</string>
+    <string name="success_invite_member_title">Added member</string>
+    <string name="failure_invite_member">Failed to invite member</string>
+    <string name="failure_invite_member_title">Avast!</string>
+    <string name="failure_find_member">User not found</string>
+    <string name="avast">Avast!</string>
+    <string name="failure_already_in_meeting">User is already invited to meeting</string>
 </resources>
