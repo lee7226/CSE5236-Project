@@ -13,14 +13,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
 
-public class MeetingListAdapter extends ArrayAdapter<DocumentSnapshot> {
+class GroupListAdapter extends ArrayAdapter<DocumentSnapshot> {
     private Context mContext;
-    private List<DocumentSnapshot> mMeetings;
+    private List<DocumentSnapshot> mGroups;
 
-    public MeetingListAdapter(@NonNull Context context, List<DocumentSnapshot> list) {
+    public GroupListAdapter(@NonNull Context context, List<DocumentSnapshot> list) {
         super(context, 0 , list);
         mContext = context;
-        mMeetings = list;
+        mGroups = list;
     }
 
     @NonNull
@@ -30,10 +30,10 @@ public class MeetingListAdapter extends ArrayAdapter<DocumentSnapshot> {
         if(listItem == null)
             listItem = LayoutInflater.from(mContext).inflate(R.layout.meeting_list_item,parent,false);
 
-        DocumentSnapshot currentMeeting = mMeetings.get(position);
+        DocumentSnapshot currentGroup = mGroups.get(position);
 
         TextView name = listItem.findViewById(R.id.list_item_textview);
-        String text = currentMeeting.get("title")+"\n"+currentMeeting.get("starttime").toString()+" to "+currentMeeting.get("endtime").toString();
+        String text = currentGroup.get("title").toString();
         name.setText(text);
 
         return listItem;

@@ -3,7 +3,6 @@ package project.cse5236.parleypirate;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;

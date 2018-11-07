@@ -4,41 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MeetingTitleActivity">
-
+    tools:context=".CreateGroupActivity">
 
     <TextView
-        android:id="@+id/meeting_title_textview"
+        android:id="@+id/group_title_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/meeting_title_label"
-        app:layout_constraintBottom_toTopOf="@+id/meeting_title_edit_text"
+        android:text="@string/group_title_label"
+        app:layout_constraintBottom_toTopOf="@+id/group_title_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/meeting_title_edit_text"
+        android:id="@+id/group_title_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:ems="10"
         android:inputType="textPersonName"
-        tools:text="Parley title goes here"
-        app:layout_constraintBottom_toTopOf="@+id/set_date_button"
+        tools:text="Group title goes here"
+        app:layout_constraintBottom_toTopOf="@+id/group_invite_users_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meeting_title_textview"
+        app:layout_constraintTop_toBottomOf="@+id/group_title_textview"
         android:importantForAutofill="no" />
 
     <Button
-        android:id="@+id/set_date_button"
+        android:id="@+id/group_invite_users_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_select_dates"
+        android:text="@string/button_invite_members_group"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meeting_title_edit_text" />
+        app:layout_constraintTop_toBottomOf="@+id/group_title_edit_text" />
+
 </android.support.constraint.ConstraintLayout>

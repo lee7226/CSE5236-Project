@@ -24,7 +24,7 @@ public class MeetingTitleActivity extends AppCompatActivity {
             }
         });
 
-        mTitleEditText = findViewById(R.id.title_edit_text);
+        mTitleEditText = findViewById(R.id.meeting_title_edit_text);
     }
 
     private void startStartDateActivity() {

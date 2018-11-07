@@ -73,7 +73,7 @@ public class MeetingTimeActivity extends AppCompatActivity {
             //somehow the intent didn't have the dates
             AlertDialog.Builder builder = new AlertDialog.Builder(MeetingTimeActivity.this);
             builder.setMessage(R.string.error_getting_intent_extras).setTitle(R.string.error_importing_time)
-                    .setPositiveButton(android.R.string.ok, (dialog, which) -> returnToMenu(getString(R.string.snackbar_failed_to_create))).create().show();
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> returnToMenu(getString(R.string.snackbar_failed_to_create_meeting))).create().show();
         }
     }
 

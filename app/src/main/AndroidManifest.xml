@@ -35,7 +35,10 @@
         <activity android:name=".SelectLocationActivity" />
         <activity android:name=".MeetingTitleActivity" />
         <activity android:name=".ViewMeetingsActivity" />
-        <activity android:name=".InviteMembersActivity"></activity>
+        <activity android:name=".InviteMembersMeetingActivity" />
+        <activity android:name=".CreateGroupActivity" />
+        <activity android:name=".InviteMembersGroupActivity" />
+        <activity android:name=".ViewGroupsActivity"></activity>
     </application>
 
 </manifest>

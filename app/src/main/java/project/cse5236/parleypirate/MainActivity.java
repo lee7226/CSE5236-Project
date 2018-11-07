@@ -67,14 +67,11 @@ public class MainActivity extends AppCompatActivity
         });
 
         mEnterAvailabilityButton = findViewById(R.id.button_enter_availability);
-        mEnterAvailabilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent callingIntent = getIntent();
-                if (callingIntent != null) {
-                    Intent enterAvailability  = new Intent(MainActivity.this, AvailabilityActivity.class);
-                    startActivity(new Intent(MainActivity.this, AvailabilityActivity.class));
-                }
+        mEnterAvailabilityButton.setOnClickListener(v -> {
+            Intent callingIntent = getIntent();
+            if (callingIntent != null) {
+                Intent enterAvailability  = new Intent(MainActivity.this, AvailabilityActivity.class);
+                startActivity(enterAvailability);
             }
         });
     }

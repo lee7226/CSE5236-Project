@@ -124,7 +124,7 @@ public class SelectLocationActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> {
                         Log.w(TAG, "Error adding document", e);
-                        returnToMenu(getString(R.string.snackbar_failed_to_create));
+                        returnToMenu(getString(R.string.snackbar_failed_to_create_meeting));
                     });
         }
     }
