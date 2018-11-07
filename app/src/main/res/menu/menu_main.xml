@@ -3,24 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="project.cse5236.parleypirate.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="1"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_logout"
-        android:orderInCategory="2"
+        android:orderInCategory="1"
         android:title="@string/action_logout"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_delete_account"
-        android:orderInCategory="4"
-        android:title="@string/action_delete_account"
+        android:id="@+id/action_update_displayname"
+        android:orderInCategory="2"
+        android:title="@string/action_update_displayname"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_update_displayname"
+        android:id="@+id/action_delete_account"
         android:orderInCategory="3"
-        android:title="@string/action_update_displayname"
+        android:title="@string/action_delete_account"
         app:showAsAction="never"/>
 
 </menu>

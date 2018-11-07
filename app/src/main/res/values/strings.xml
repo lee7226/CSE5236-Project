@@ -175,8 +175,8 @@
     <string name="avast">Avast!</string>
     <string name="failure_already_in_meeting">User is already invited to meeting</string>
     <string name="group_title_label">Group Title</string>
-    <string name="button_invite_members_group">Invite members</string>
-    <string name="failure_already_in_group">Member is already in group</string>
+    <string name="button_create_group">Create Crew!</string>
+    <string name="failure_already_in_group">Member is already in crew</string>
     <string name="string_view_groups">View Crews!</string>
     <string name="string_create_group">Create a Crew!</string>
 

@@ -23,7 +23,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         tools:text="Group title goes here"
-        app:layout_constraintBottom_toTopOf="@+id/group_invite_users_button"
+        app:layout_constraintBottom_toTopOf="@+id/button_create_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,10 +31,10 @@
         android:importantForAutofill="no" />
 
     <Button
-        android:id="@+id/group_invite_users_button"
+        android:id="@+id/button_create_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_invite_members_group"
+        android:text="@string/button_create_group"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

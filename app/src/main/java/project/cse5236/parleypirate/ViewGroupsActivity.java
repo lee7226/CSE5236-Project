@@ -39,7 +39,7 @@ public class ViewGroupsActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference groupsRef = db.collection("groups");
         DocumentReference userRef = db.document(USERS+UserDatabaseId.getDbId());
-        final Query query = groupsRef.whereArrayContains("groups", userRef);
+        final Query query = groupsRef.whereArrayContains("members", userRef);
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot qs = task.getResult();

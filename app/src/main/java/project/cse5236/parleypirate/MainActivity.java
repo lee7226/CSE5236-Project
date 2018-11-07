@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity
     private Button mNewMeetingButton;
     private Button mEnterAvailabilityButton;
     private Button mViewMeetingsButton;
+    private Button mCreateGroupButton;
+    private Button mViewGroupsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +70,22 @@ public class MainActivity extends AppCompatActivity
 
         mEnterAvailabilityButton = findViewById(R.id.button_enter_availability);
         mEnterAvailabilityButton.setOnClickListener(v -> {
-            Intent callingIntent = getIntent();
-            if (callingIntent != null) {
-                Intent enterAvailability  = new Intent(MainActivity.this, AvailabilityActivity.class);
-                startActivity(enterAvailability);
+            if(v.getId()==R.id.button_view_meetings){
+                startActivity(new Intent(MainActivity.this, AvailabilityActivity.class));
+            }
+        });
+
+        mViewGroupsButton = findViewById(R.id.button_view_groups);
+        mViewGroupsButton.setOnClickListener(v-> {
+            if(v.getId()==R.id.button_view_groups){
+                startActivity(new Intent(MainActivity.this, ViewGroupsActivity.class));
+            }
+        });
+
+        mCreateGroupButton = findViewById(R.id.button_create_group);
+        mCreateGroupButton.setOnClickListener(v->{
+            if(v.getId()==R.id.button_create_group){
+                startActivity(new Intent(MainActivity.this, CreateGroupActivity.class));
             }
         });
     }

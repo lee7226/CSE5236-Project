@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
+import java.util.Objects;
 
 class GroupListAdapter extends ArrayAdapter<DocumentSnapshot> {
     private Context mContext;
@@ -33,7 +34,11 @@ class GroupListAdapter extends ArrayAdapter<DocumentSnapshot> {
         DocumentSnapshot currentGroup = mGroups.get(position);
 
         TextView name = listItem.findViewById(R.id.list_item_textview);
-        String text = currentGroup.get("title").toString();
+        Object obj = currentGroup.get("title");
+        String text = "<no name>";
+        if(obj!=null) {
+            text = Objects.requireNonNull(currentGroup.get("title")).toString();
+        }
         name.setText(text);
 
         return listItem;

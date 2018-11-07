@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class CreateGroupActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateGroupActivity";
-    private Button mInviteMembersButton;
+    private Button mCreateGroupButton;
     private EditText mTitleEditText;
 
     @Override
@@ -21,14 +21,14 @@ public class CreateGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
-        mInviteMembersButton = findViewById(R.id.set_date_button);
-        mInviteMembersButton.setOnClickListener(v->{
-            if(v.getId()==R.id.set_date_button){
+        mCreateGroupButton = findViewById(R.id.button_create_group);
+        mCreateGroupButton.setOnClickListener(v->{
+            if(v.getId()==R.id.button_create_group){
                 createGroup();
             }
         });
 
-        mTitleEditText = findViewById(R.id.meeting_title_edit_text);
+        mTitleEditText = findViewById(R.id.group_title_edit_text);
     }
 
     private void createGroup() {
@@ -36,6 +36,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         if(!title.equals("")){
             Group group = new Group();
             group.addMember(UserDatabaseId.getDbId());
+            group.setTitle(title);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
