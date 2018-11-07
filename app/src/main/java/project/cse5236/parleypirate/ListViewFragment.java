@@ -7,19 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class MainActivityFragment extends Fragment {
+public class ListViewFragment extends Fragment {
+    private static final String TAG = "ListViewFragment";
 
-    private static final String TAG = "MainActivityFragment";
-
-    public MainActivityFragment() {
+    public ListViewFragment() {
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.fragment_listview, container, false);
     }
 }

@@ -19,9 +19,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InviteMembersActivity extends AppCompatActivity {
+public class InviteMembersMeetingActivity extends AppCompatActivity {
 
-    private static final String TAG = "InviteUsersActivity";
+    private static final String TAG = "InviteMembersMeeting";
     private TextView mCurrentMembersTextView;
     private Button mInviteMemberButton;
     private EditText mInviteMemberEditText;
@@ -33,7 +33,7 @@ public class InviteMembersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_invite_users);
+        setContentView(R.layout.fragment_invite_members);
 
         initializeCurrentMembersTextView();
 
@@ -42,10 +42,10 @@ public class InviteMembersActivity extends AppCompatActivity {
         mInviteMemberButton = findViewById(R.id.invite_member_button);
         mInviteMemberButton.setOnClickListener(v->{
             if(v.getId()==R.id.invite_member_button){
-                if(!mInviteMemberEditText.getText().equals("")) {
+                if(!mInviteMemberEditText.getText().toString().equals("")) {
                     inviteMember();
                 }else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
                     builder.setMessage(R.string.error_empty_invite_email).setTitle(R.string.error_empty_invite_email_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         //do nothing
                     }).create().show();
@@ -65,7 +65,7 @@ public class InviteMembersActivity extends AppCompatActivity {
                     QuerySnapshot qs = task.getResult();
                     if (qs.size() > 0) {
                         Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-                        addMemberToDatabase(db, qs, email);
+                        addMember(db, qs, email);
                     } else {
                         Log.d(TAG, "User not found");
                         showNotFoundDialog();
@@ -80,20 +80,20 @@ public class InviteMembersActivity extends AppCompatActivity {
     }
 
     private void showAlreadyInMeetingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
         builder.setMessage(R.string.failure_already_in_meeting).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
             //do nothing
         }).create().show();
     }
 
     private void showNotFoundDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
         builder.setMessage(R.string.failure_find_member).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
             //do nothing
         }).create().show();
     }
 
-    private void addMemberToDatabase(FirebaseFirestore db, QuerySnapshot qs,String email) {
+    private void addMember(FirebaseFirestore db, QuerySnapshot qs, String email) {
         List<DocumentSnapshot> docRefs = qs.getDocuments();
         String id = docRefs.get(0).getId();
         DocumentReference meeting = db.document("/meetings/"+meetingId);
@@ -117,20 +117,18 @@ public class InviteMembersActivity extends AppCompatActivity {
     }
 
     private void showFailureDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
         builder.setMessage(R.string.failure_invite_member).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
             //do nothing
         }).create().show();
     }
 
     private void updateCurrentMembersTextView(String email) {
-        StringBuilder sb = new StringBuilder(mCurrentMembersTextView.getText().toString());
-        sb.append("\n"+email);
-        mCurrentMembersTextView.setText(sb.toString());
+        mCurrentMembersTextView.setText(mCurrentMembersTextView.getText().toString() + "\n" + email);
     }
 
     private void showSuccessDialog(String email) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
         builder.setMessage(getString(R.string.success_invite_member,email)).setTitle(R.string.success_invite_member_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
             //do nothing
         }).create().show();
@@ -141,8 +139,8 @@ public class InviteMembersActivity extends AppCompatActivity {
         mCurrentMembersTextView.setText(R.string.current_members);
         currentUsers = new ArrayList<>();
         Intent callingIntent = getIntent();
-        if(callingIntent!=null && callingIntent.hasExtra("meetingId")){
-            meetingId = (String) callingIntent.getExtras().get("meetingId");
+        if(callingIntent!=null && callingIntent.hasExtra(getString(R.string.meetingId))){
+            meetingId = (String) callingIntent.getExtras().get(getString(R.string.meetingId));
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference dr = db.document("/meetings/"+meetingId);
             dr.get().addOnCompleteListener(task -> {

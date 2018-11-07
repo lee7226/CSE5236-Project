@@ -16,47 +16,47 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewMeetingsActivity extends AppCompatActivity {
+public class ViewGroupsActivity extends AppCompatActivity {
 
-    private static final String TAG = "ViewMeetingsActivity";
+    private static final String TAG = "ViewGroupsActivity";
     private static final String USERS = "/users/";
 
     private ListView mListView;
 
-    private List<DocumentSnapshot> meetings;
+    private List<DocumentSnapshot> groups;
 
-    private MeetingListAdapter mAdapter;
+    private GroupListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_listview);
 
-        addMeetingsToListView();
+        addGroupsToListView();
     }
 
-    private void addMeetingsToListView() {
+    private void addGroupsToListView() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference meetingsRef = db.collection("meetings");
+        CollectionReference groupsRef = db.collection("groups");
         DocumentReference userRef = db.document(USERS+UserDatabaseId.getDbId());
-        final Query query = meetingsRef.whereArrayContains("members", userRef);
+        final Query query = groupsRef.whereArrayContains("members", userRef);
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot qs = task.getResult();
                 if(qs!=null && qs.size()>0) {
-                    Log.d(TAG, "found " + qs.size() + " meetings");
-                    meetings = new ArrayList<>();
-                    meetings.addAll(qs.getDocuments());
-                    mAdapter = new MeetingListAdapter(this, meetings);
+                    Log.d(TAG, "found " + qs.size() + " groups");
+                    groups = new ArrayList<>();
+                    groups.addAll(qs.getDocuments());
+                    mAdapter = new GroupListAdapter(this, groups);
                     mListView = findViewById(R.id.listview);
                     mListView.setAdapter(mAdapter);
                     mListView.setClickable(true);
                     mListView.setOnItemClickListener((parent, view, position, id) -> {
                         Object o = mListView.getItemAtPosition(position);
                         DocumentSnapshot ds = (DocumentSnapshot) o;
-                        Intent meetingOptionsIntent = new Intent(ViewMeetingsActivity.this,MeetingOptionsActivity.class);
-                        meetingOptionsIntent.putExtra(getString(R.string.meetingId),ds.getId());
-                        startActivity(meetingOptionsIntent);
+                        Intent inviteUsersIntent = new Intent(ViewGroupsActivity.this,InviteMembersGroupActivity.class);
+                        inviteUsersIntent.putExtra("groupId",ds.getId());
+                        startActivity(inviteUsersIntent);
                     });
                 }
             } else {
@@ -64,5 +64,4 @@ public class ViewMeetingsActivity extends AppCompatActivity {
             }
         });
     }
-
 }

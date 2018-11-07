@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     private Button mNewMeetingButton;
     private Button mEnterAvailabilityButton;
     private Button mViewMeetingsButton;
+    private Button mCreateGroupButton;
+    private Button mViewGroupsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +67,23 @@ public class MainActivity extends AppCompatActivity
         });
 
         mEnterAvailabilityButton = findViewById(R.id.button_enter_availability);
-        mEnterAvailabilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent callingIntent = getIntent();
-                if (callingIntent != null) {
-                    Intent enterAvailability  = new Intent(MainActivity.this, AvailabilityActivity.class);
-                    startActivity(new Intent(MainActivity.this, AvailabilityActivity.class));
-                }
+        mEnterAvailabilityButton.setOnClickListener(v -> {
+            if(v.getId()==R.id.button_view_meetings){
+                startActivity(new Intent(MainActivity.this, AvailabilityActivity.class));
+            }
+        });
+
+        mViewGroupsButton = findViewById(R.id.button_view_groups);
+        mViewGroupsButton.setOnClickListener(v-> {
+            if(v.getId()==R.id.button_view_groups){
+                startActivity(new Intent(MainActivity.this, ViewGroupsActivity.class));
+            }
+        });
+
+        mCreateGroupButton = findViewById(R.id.button_create_group);
+        mCreateGroupButton.setOnClickListener(v->{
+            if(v.getId()==R.id.button_create_group){
+                startActivity(new Intent(MainActivity.this, CreateGroupActivity.class));
             }
         });
     }
@@ -119,9 +128,7 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }else if(id == R.id.action_logout){
+        if(id == R.id.action_logout){
             signOut();
         }else if(id == R.id.action_delete_account){
             confirmDelete();

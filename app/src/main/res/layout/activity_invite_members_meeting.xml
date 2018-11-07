@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewMeetingsActivity">
-
+    tools:context=".InviteMembersMeetingActivity"
+    android:id="@+id/invite_members_meeting">
 
 </android.support.constraint.ConstraintLayout>
