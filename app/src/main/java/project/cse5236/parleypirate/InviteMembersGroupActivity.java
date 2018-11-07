@@ -1,15 +1,14 @@
 package project.cse5236.parleypirate;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,7 +42,7 @@ public class InviteMembersGroupActivity extends AppCompatActivity {
         mInviteMemberButton = findViewById(R.id.invite_member_button);
         mInviteMemberButton.setOnClickListener(v->{
             if(v.getId()==R.id.invite_member_button){
-                if(!mInviteMemberEditText.getText().equals("")) {
+                if(!mInviteMemberEditText.getText().toString().equals("")) {
                     inviteMember();
                 }else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersGroupActivity.this);
@@ -125,9 +124,7 @@ public class InviteMembersGroupActivity extends AppCompatActivity {
     }
 
     private void updateCurrentMembersTextView(String email) {
-        StringBuilder sb = new StringBuilder(mCurrentMembersTextView.getText().toString());
-        sb.append("\n"+email);
-        mCurrentMembersTextView.setText(sb.toString());
+        mCurrentMembersTextView.setText(mCurrentMembersTextView.getText().toString() + "\n" + email);
     }
 
     private void showSuccessDialog(String email) {

@@ -38,7 +38,10 @@
         <activity android:name=".InviteMembersMeetingActivity" />
         <activity android:name=".CreateGroupActivity" />
         <activity android:name=".InviteMembersGroupActivity" />
-        <activity android:name=".ViewGroupsActivity"></activity>
+        <activity android:name=".ViewGroupsActivity" />
+        <activity android:name=".MeetingOptionsActivity" />
+        <activity android:name=".InviteGroupsActivity" />
+        <activity android:name=".InviteGroupsMeetingActivity"></activity>
     </application>
 
 </manifest>

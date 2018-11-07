@@ -54,9 +54,9 @@ public class ViewMeetingsActivity extends AppCompatActivity {
                     mListView.setOnItemClickListener((parent, view, position, id) -> {
                         Object o = mListView.getItemAtPosition(position);
                         DocumentSnapshot ds = (DocumentSnapshot) o;
-                        Intent inviteUsersIntent = new Intent(ViewMeetingsActivity.this,InviteMembersMeetingActivity.class);
-                        inviteUsersIntent.putExtra("meetingId",ds.getId());
-                        startActivity(inviteUsersIntent);
+                        Intent meetingOptionsIntent = new Intent(ViewMeetingsActivity.this,MeetingOptionsActivity.class);
+                        meetingOptionsIntent.putExtra(getString(R.string.meetingId),ds.getId());
+                        startActivity(meetingOptionsIntent);
                     });
                 }
             } else {

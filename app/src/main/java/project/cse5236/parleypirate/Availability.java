@@ -42,8 +42,8 @@ public class Availability {
         int bitwisedAvals = 0;
 
         // do bitwise or on binary avals
-        for (int i = 0; i < intRepresentations.length; i++) {
-            bitwisedAvals = bitwisedAvals | intRepresentations[i];
+        for (int intRepresentation : intRepresentations) {
+            bitwisedAvals = bitwisedAvals | intRepresentation;
         }
         // set openAvals to the result
         openAval = Integer.toString(bitwisedAvals, 2);
@@ -59,20 +59,8 @@ public class Availability {
         avalAsMap.put("availability", aval);
         db.collection("availabilities")
                 .add(avalAsMap)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Availability added");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("LogNotTimber")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+                .addOnSuccessListener(documentReference -> Log.d(TAG, "Availability added"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
     }
 
     public String GetAvailability(String userId) {
@@ -81,23 +69,19 @@ public class Availability {
 
         CollectionReference avalRef = db.collection("availabilities");
         final Query query = avalRef.whereEqualTo("user",userId);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @SuppressLint("LogNotTimber")
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    QuerySnapshot qs = task.getResult();
-                    if (qs.size()>0) {
-                        List<DocumentSnapshot> avalList = qs.getDocuments();
-                        availability = (String)avalList.get(0).get("availability");
-                        Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-                    } else {
-                        availability = "";
-                        Log.d(TAG, "user has no availability");
-                    }
-                }else{
-                    Log.d(TAG, "get failed with ", task.getException());
+        query.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                QuerySnapshot qs = task.getResult();
+                if (qs.size()>0) {
+                    List<DocumentSnapshot> avalList = qs.getDocuments();
+                    availability = (String)avalList.get(0).get("availability");
+                    Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                } else {
+                    availability = "";
+                    Log.d(TAG, "user has no availability");
                 }
+            }else{
+                Log.d(TAG, "get failed with ", task.getException());
             }
         });
 

@@ -179,5 +179,16 @@
     <string name="failure_already_in_group">Member is already in crew</string>
     <string name="string_view_groups">View Crews!</string>
     <string name="string_create_group">Create a Crew!</string>
+    <string name="button_invite_members_to_meeting">Invite members to parley</string>
+    <string name="invite_groyps_to_meeting">Invite crews to parley</string>
+    <string name="button_view_meeting_availability">View parley availability</string>
+    <string name="meetingId">meetingId</string>
+    <string name="invite_group_button">Invite crew</string>
+    <string name="invite_group_label">Enter crew name to invite to meeting</string>
+    <string name="error_empty_invite_group_name">Invalid crew name</string>
+    <string name="failure_find_group">Crew not found!</string>
+    <string name="success_invite_group">Successfully added members of %1s to the parley!</string>
+    <string name="success_invite_group_title">Added crew</string>
+    <string name="failure_invite_group">Failed to invite one or more mebers of the crew</string>
 
 </resources>

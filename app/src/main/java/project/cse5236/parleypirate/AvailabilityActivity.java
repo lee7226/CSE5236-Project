@@ -1,20 +1,15 @@
 package project.cse5236.parleypirate;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -109,8 +104,8 @@ public class AvailabilityActivity extends AppCompatActivity {
 
     private String getOnScreenAvailability() {
         StringBuilder availabilityString = new StringBuilder();
-        for (int i = 0; i < mAvailabilityButtons.length; i++) {
-            if (mAvailabilityButtons[i].getContentDescription() == "1") {
+        for (Button mAvailabilityButton : mAvailabilityButtons) {
+            if (mAvailabilityButton.getContentDescription() == "1") {
                 availabilityString.append("1");
             } else {
                 availabilityString.append("0");
@@ -131,8 +126,8 @@ public class AvailabilityActivity extends AppCompatActivity {
         int bitwisedAvals = 0;
 
         // do bitwise or on binary avals
-        for (int i = 0; i < intRepresentations.length; i++) {
-            bitwisedAvals = bitwisedAvals | intRepresentations[i];
+        for (int intRepresentation : intRepresentations) {
+            bitwisedAvals = bitwisedAvals | intRepresentation;
         }
         // set openAvals to the result
         openAval = Integer.toString(bitwisedAvals, 2);
@@ -171,12 +166,7 @@ public class AvailabilityActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DocumentReference avalRef = db.collection("availabilities").document(id);
 
-        avalRef.update("availability",aval).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!")).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error updating document", e);
-            }
-        });
+        avalRef.update("availability",aval).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!")).addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
 
     private void createDatabaseAvailability(String aval) {
