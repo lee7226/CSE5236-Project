@@ -174,4 +174,5 @@
     <string name="failure_find_member">User not found</string>
     <string name="avast">Avast!</string>
     <string name="failure_already_in_meeting">User is already invited to meeting</string>
+    <string name="view_availabile_times">View Available Times</string>
 </resources>

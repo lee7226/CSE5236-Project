@@ -35,6 +35,7 @@
         <activity android:name=".SelectLocationActivity" />
         <activity android:name=".MeetingTitleActivity" />
         <activity android:name=".ViewMeetingsActivity" />
+        <activity android:name=".MeetingAvailabilityActivity" />
         <activity android:name=".InviteMembersActivity"></activity>
     </application>
 

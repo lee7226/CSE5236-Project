@@ -24,6 +24,7 @@ public class InviteMembersActivity extends AppCompatActivity {
     private static final String TAG = "InviteUsersActivity";
     private TextView mCurrentMembersTextView;
     private Button mInviteMemberButton;
+    private Button mViewAvailableTimesButton;
     private EditText mInviteMemberEditText;
 
     private List<String> currentUsers;
@@ -38,6 +39,7 @@ public class InviteMembersActivity extends AppCompatActivity {
         initializeCurrentMembersTextView();
 
         mInviteMemberEditText = findViewById(R.id.invite_member_edittext);
+        mViewAvailableTimesButton = findViewById(R.id.view_available_times_button);
 
         mInviteMemberButton = findViewById(R.id.invite_member_button);
         mInviteMemberButton.setOnClickListener(v->{
@@ -49,6 +51,36 @@ public class InviteMembersActivity extends AppCompatActivity {
                     builder.setMessage(R.string.error_empty_invite_email).setTitle(R.string.error_empty_invite_email_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         //do nothing
                     }).create().show();
+                }
+            }
+        });
+
+        mViewAvailableTimesButton.setOnClickListener(v->{
+            if(v.getId()==R.id.view_available_times_button) {
+
+                Intent meetingAvailabilityIntent = new Intent(InviteMembersActivity.this,MeetingAvailabilityActivity.class);
+
+                // clunky way of doing this for now, will be more optimized in the future
+                Intent callingIntent = getIntent();
+                if(callingIntent!=null && callingIntent.hasExtra("meetingId")){
+                    meetingId = (String) callingIntent.getExtras().get("meetingId");
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference dr = db.document("/meetings/"+meetingId);
+                    dr.get().addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot meetingDs = task.getResult();
+                            List<DocumentReference> members = (List<DocumentReference>) meetingDs.get("members");
+                            if(members.size()>0) {
+                                List<String> userIds = new ArrayList<>();
+                                for (int i = 0; i < members.size(); i++) {
+                                    meetingAvailabilityIntent.putExtra("user" + i, members.get(i).getId());
+                                }
+                                startActivity(meetingAvailabilityIntent);
+                            }
+                        }else{
+                            Log.e(TAG,"Error getting meeting");
+                        }
+                    });
                 }
             }
         });
@@ -166,6 +198,5 @@ public class InviteMembersActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 }
