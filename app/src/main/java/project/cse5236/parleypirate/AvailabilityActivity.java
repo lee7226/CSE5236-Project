@@ -1,15 +1,20 @@
 package project.cse5236.parleypirate;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -48,23 +53,43 @@ public class AvailabilityActivity extends AppCompatActivity {
             updateAvailabilityOnClick(mAvailabilityButtons[i], i);
         }
 
-        CollectionReference avalRef = db.collection("availabilities");
-        final Query query = avalRef.whereEqualTo("user",user.getUid());
-        query.get().addOnCompleteListener(task -> {
+
+
+        CollectionReference usersRef = db.collection("users");
+        final Query queryForId = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
+        queryForId.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 QuerySnapshot qs = task.getResult();
                 if (qs.size()>0) {
-                    List<DocumentSnapshot> avalList = qs.getDocuments();
-                    String availabilityInnerString = (String)avalList.get(0).get("availability");
-                    for (int i = 0; i < mAvailabilityButtons.length; i++) {
-                        if (availabilityInnerString.charAt(i) == '1') {
-                            mAvailabilityButtons[i].setBackgroundColor(getResources().getColor(R.color.colorGreen));
-                            mAvailabilityButtons[i].setContentDescription("1");
-                        }
-                    }
                     Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                    CollectionReference avalRef = db.collection("availabilities");
+                    final Query query = avalRef.whereEqualTo("user",qs.getDocuments().get(0).getId());
+                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @SuppressLint("LogNotTimber")
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                QuerySnapshot qs = task.getResult();
+                                if (qs.size()>0) {
+                                    List<DocumentSnapshot> avalList = qs.getDocuments();
+                                    String availabilityInnerString = (String)avalList.get(0).get("availability");
+                                    for (int i = 0; i < mAvailabilityButtons.length; i++) {
+                                        if (availabilityInnerString.charAt(i) == '1') {
+                                            mAvailabilityButtons[i].setBackgroundColor(getResources().getColor(R.color.colorGreen));
+                                            mAvailabilityButtons[i].setContentDescription("1");
+                                        }
+                                    }
+                                    Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                                } else {
+                                    Log.d(TAG, "user has no availability");
+                                }
+                            }else{
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
                 } else {
-                    Log.d(TAG, "user has no availability");
+                    Log.d(TAG, "no user");
                 }
             }else{
                 Log.d(TAG, "get failed with ", task.getException());
@@ -139,22 +164,42 @@ public class AvailabilityActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        CollectionReference avalRef = db.collection("availabilities");
-        final Query query = avalRef.whereEqualTo("user",user.getUid()).limit(1);
-        query.get().addOnCompleteListener(task -> {
+
+        CollectionReference usersRef = db.collection("users");
+        final Query queryForId = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
+        queryForId.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 QuerySnapshot qs = task.getResult();
                 if (qs.size()>0) {
                     Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-                    List<DocumentSnapshot> docRefs = qs.getDocuments();
-                    String id = docRefs.get(0).getId();
-                    updateDatabaseAvailability(id, getOnScreenAvailability());
+                    String userId = qs.getDocuments().get(0).getId();
+                    CollectionReference avalRef = db.collection("availabilities");
+                    final Query query = avalRef.whereEqualTo("user",qs.getDocuments().get(0).getId()).limit(1);
+                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @SuppressLint("LogNotTimber")
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                QuerySnapshot qs = task.getResult();
+                                if (qs.size()>0) {
+                                    Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                                    List<DocumentSnapshot> docRefs = qs.getDocuments();
+                                    String id = docRefs.get(0).getId();
+                                    updateDatabaseAvailability(id, getOnScreenAvailability());
+                                } else {
+                                    Log.d(TAG, "User not found");
+                                    createDatabaseAvailability(getOnScreenAvailability());
+                                }
+                                Toast.makeText(getApplicationContext(), "Availability Saved!",
+                                        Toast.LENGTH_LONG).show();
+                            }else{
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
                 } else {
-                    Log.d(TAG, "User not found");
-                    createDatabaseAvailability(getOnScreenAvailability());
+                    Log.d(TAG, "no user, shouldn't be on this screen");
                 }
-                Toast.makeText(getApplicationContext(), "Availability Saved!",
-                Toast.LENGTH_LONG).show();
             }else{
                 Log.d(TAG, "get failed with ", task.getException());
             }
@@ -173,13 +218,39 @@ public class AvailabilityActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        Map<String,Object> avalAsMap = new HashMap<>();
-        avalAsMap.put("user", user.getUid());
-        avalAsMap.put("availability", aval);
-        db.collection("availabilities")
-                .add(avalAsMap)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "Availability added"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
+        CollectionReference usersRef = db.collection("users");
+        final Query query = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
+        query.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                QuerySnapshot qs = task.getResult();
+                if (qs.size()>0) {
+                    Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                    Map<String,Object> avalAsMap = new HashMap<>();
+                    avalAsMap.put("user", qs.getDocuments().get(0).getId());
+                    avalAsMap.put("availability", aval);
+                    db.collection("availabilities")
+                            .add(avalAsMap)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @SuppressLint("LogNotTimber")
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "Availability added");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @SuppressLint("LogNotTimber")
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error adding document", e);
+                                }
+                            });
+                } else {
+                    Log.d(TAG, "no user, shouldn't be on this screen");
+                }
+            }else{
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
     }
 
 

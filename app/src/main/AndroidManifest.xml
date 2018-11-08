@@ -42,6 +42,8 @@
         <activity android:name=".MeetingOptionsActivity" />
         <activity android:name=".InviteGroupsActivity" />
         <activity android:name=".InviteGroupsMeetingActivity"></activity>
+        <activity android:name=".MeetingAvailabilityActivity" />
+        <activity android:name=".InviteMembersActivity"></activity>
     </application>
 
 </manifest>

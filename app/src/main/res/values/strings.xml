@@ -191,4 +191,5 @@
     <string name="success_invite_group_title">Added crew</string>
     <string name="failure_invite_group">Failed to invite one or more mebers of the crew</string>
 
+    <string name="view_availabile_times">View Available Times</string>
 </resources>
