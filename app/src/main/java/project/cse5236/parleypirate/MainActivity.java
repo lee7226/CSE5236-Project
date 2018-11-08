@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 
         mEnterAvailabilityButton = findViewById(R.id.button_enter_availability);
         mEnterAvailabilityButton.setOnClickListener(v -> {
-            if(v.getId()==R.id.button_view_meetings){
+            if(v.getId()==R.id.button_enter_availability){
                 startActivity(new Intent(MainActivity.this, AvailabilityActivity.class));
             }
         });

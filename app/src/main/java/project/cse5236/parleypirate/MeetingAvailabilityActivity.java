@@ -117,36 +117,32 @@ public class MeetingAvailabilityActivity extends AppCompatActivity {
         CollectionReference avalRef = db.collection("availabilities");
         //final Query query = avalRef.get()//avalRef.whereEqualTo("availability", "aval");
         //query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-        avalRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @SuppressLint("LogNotTimber")
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    QuerySnapshot qs = task.getResult();
-                    if (qs.size()>0) {
-                        List<DocumentSnapshot> avalList = qs.getDocuments();
-                        List<String> avalStrList = new ArrayList<>();
-                        for (int i = 0; i < avalList.size(); i++) {
-                            if (ArrayUtils.contains(avals, avalList.get(i).get("user"))) {
-                                String availabilityInnerString = (String)avalList.get(i).get("availability");
-                                avalStrList.add(availabilityInnerString);
-                            }
+        avalRef.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                QuerySnapshot qs = task.getResult();
+                if (qs.size()>0) {
+                    List<DocumentSnapshot> avalList = qs.getDocuments();
+                    List<String> avalStrList = new ArrayList<>();
+                    for (int i = 0; i < avalList.size(); i++) {
+                        if (ArrayUtils.contains(avals, avalList.get(i).get("user"))) {
+                            String availabilityInnerString = (String)avalList.get(i).get("availability");
+                            avalStrList.add(availabilityInnerString);
                         }
-
-                        String openAvals = GetOpenAvalability(avalStrList.toArray(new String[avalStrList.size()]));
-                        for (int i = 0; i < mAvailabilityButtons.length && i < openAvals.length(); i++) {
-                            if (openAvals.charAt(i) == '1') {
-                                mAvailabilityButtons[i].setBackgroundColor(getResources().getColor(R.color.colorGreen));
-                                mAvailabilityButtons[i].setContentDescription("1");
-                            }
-                        }
-                        Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-                    } else {
-                        Log.d(TAG, "user has no availability");
                     }
-                }else{
-                    Log.d(TAG, "get failed with ", task.getException());
+
+                    String openAvals = GetOpenAvalability(avalStrList.toArray(new String[avalStrList.size()]));
+                    for (int i = 0; i < mAvailabilityButtons.length && i < openAvals.length(); i++) {
+                        if (openAvals.charAt(i) == '1') {
+                            mAvailabilityButtons[i].setBackgroundColor(getResources().getColor(R.color.colorGreen));
+                            mAvailabilityButtons[i].setContentDescription("1");
+                        }
+                    }
+                    Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                } else {
+                    Log.d(TAG, "user has no availability");
                 }
+            }else{
+                Log.d(TAG, "get failed with ", task.getException());
             }
         });
     }
