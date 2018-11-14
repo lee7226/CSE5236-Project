@@ -168,6 +168,9 @@ public class MeetingAvailabilityActivity extends AppCompatActivity {
         }
         // set openAvals to the result
         openAval = Long.toString(bitwisedAvals, 2);
+        while (openAval.length() < 48) {
+            openAval = "0" + openAval;
+        }
 
         return  openAval;
     }
