@@ -1,13 +1,18 @@
 package project.cse5236.parleypirate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
@@ -62,7 +67,16 @@ public class MainActivity extends AppCompatActivity
         mViewMeetingsButton = findViewById(R.id.button_view_meetings);
         mViewMeetingsButton.setOnClickListener(v->{
             if(v.getId()==R.id.button_view_meetings) {
-                startActivity(new Intent(MainActivity.this, ViewMeetingsActivity.class));
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                if(ni != null && ni.isConnected()) {
+                    startActivity(new Intent(MainActivity.this, ViewMeetingsActivity.class));
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.error_no_network).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        //do nothing
+                    }).create().show();
+                }
             }
         });
 
@@ -76,7 +90,16 @@ public class MainActivity extends AppCompatActivity
         mViewGroupsButton = findViewById(R.id.button_view_groups);
         mViewGroupsButton.setOnClickListener(v-> {
             if(v.getId()==R.id.button_view_groups){
-                startActivity(new Intent(MainActivity.this, ViewGroupsActivity.class));
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                if(ni != null && ni.isConnected()) {
+                    startActivity(new Intent(MainActivity.this, ViewGroupsActivity.class));
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.error_no_network).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        //do nothing
+                    }).create().show();
+                }
             }
         });
 

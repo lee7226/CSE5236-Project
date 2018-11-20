@@ -1,21 +1,27 @@
 package project.cse5236.parleypirate;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,6 +59,8 @@ public class SelectLocationActivity extends AppCompatActivity {
 
     private GeoPoint location;
 
+    private ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +69,23 @@ public class SelectLocationActivity extends AppCompatActivity {
         mSetLocationAndCreateMeetingButton = findViewById(R.id.button_set_location_and_create_meeting);
         mSetLocationAndCreateMeetingButton.setOnClickListener(v-> {
             if (v.getId() == R.id.button_set_location_and_create_meeting) {
-                setLocation();
-                createMeeting();
+                mProgressBar = findViewById(R.id.progressBar_SelectLocationActivity);
+                mProgressBar.setVisibility(View.VISIBLE);
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                if(ni!= null && ni.isConnected()) {
+                    setLocation();
+                    createMeeting();
+                }else {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SelectLocationActivity.this);
+                    builder.setMessage(R.string.error_no_network).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        //do nothing
+                    }).create().show();
+                }
+
             }
         });
-        Log.d(TAG,"the text of the button is:"+mSetLocationAndCreateMeetingButton.getText().toString());
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
@@ -94,7 +114,6 @@ public class SelectLocationActivity extends AppCompatActivity {
             params.bottomMargin = (int) (12 * density);
             dropPinView.setLayoutParams(params);
             mMapView.addView(dropPinView);
-
 
         });
     }
@@ -125,7 +144,7 @@ public class SelectLocationActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         Log.w(TAG, "Error adding document", e);
                         returnToMenu(getString(R.string.snackbar_failed_to_create_meeting));
-                    });
+                    }).addOnCompleteListener(e -> mProgressBar.setVisibility(View.GONE));
         }
     }
 

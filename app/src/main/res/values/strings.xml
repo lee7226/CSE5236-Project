@@ -192,4 +192,5 @@
     <string name="failure_invite_group">Failed to invite one or more mebers of the crew</string>
 
     <string name="view_availabile_times">View Available Times</string>
+    <string name="error_no_network">No network connection.  Please try again later.</string>
 </resources>

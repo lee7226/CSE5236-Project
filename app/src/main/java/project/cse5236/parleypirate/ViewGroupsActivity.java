@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -12,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firestore.admin.v1beta1.Progress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +29,15 @@ public class ViewGroupsActivity extends AppCompatActivity {
     private List<DocumentSnapshot> groups;
 
     private GroupListAdapter mAdapter;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_listview);
 
+        mProgressBar = findViewById(R.id.progressBar_listview);
+        mProgressBar.setVisibility(View.VISIBLE);
         addGroupsToListView();
     }
 
@@ -62,6 +68,7 @@ public class ViewGroupsActivity extends AppCompatActivity {
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
             }
+            mProgressBar.setVisibility(View.GONE);
         });
     }
 }

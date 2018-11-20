@@ -1,12 +1,17 @@
 package project.cse5236.parleypirate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -29,12 +34,15 @@ public class InviteMembersMeetingActivity extends AppCompatActivity {
     private List<String> currentUsers;
 
     private String meetingId;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_invite_members);
 
+        mProgressBar = findViewById(R.id.progressBar_InviteMembersFragment);
+        mProgressBar.setVisibility(View.VISIBLE);
         initializeCurrentMembersTextView();
 
         mInviteMemberEditText = findViewById(R.id.invite_member_edittext);
@@ -42,11 +50,22 @@ public class InviteMembersMeetingActivity extends AppCompatActivity {
         mInviteMemberButton = findViewById(R.id.invite_member_button);
         mInviteMemberButton.setOnClickListener(v->{
             if(v.getId()==R.id.invite_member_button){
-                if(!mInviteMemberEditText.getText().toString().equals("")) {
-                    inviteMember();
+                mProgressBar.setVisibility(View.VISIBLE);
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                if(ni != null && ni.isConnected()) {
+                    if(!mInviteMemberEditText.getText().toString().equals("")) {
+                        inviteMember();
+                    }else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
+                        builder.setMessage(R.string.error_empty_invite_email).setTitle(R.string.error_empty_invite_email_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            //do nothing
+                        }).create().show();
+                    }
                 }else {
+                    mProgressBar.setVisibility(View.INVISIBLE);
                     AlertDialog.Builder builder = new AlertDialog.Builder(InviteMembersMeetingActivity.this);
-                    builder.setMessage(R.string.error_empty_invite_email).setTitle(R.string.error_empty_invite_email_title).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    builder.setMessage(R.string.error_no_network).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         //do nothing
                     }).create().show();
                 }
@@ -69,6 +88,7 @@ public class InviteMembersMeetingActivity extends AppCompatActivity {
                     } else {
                         Log.d(TAG, "User not found");
                         showNotFoundDialog();
+                        mProgressBar.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -111,6 +131,7 @@ public class InviteMembersMeetingActivity extends AppCompatActivity {
                         Log.e(TAG,"Failed to add member to meeting");
                         showFailureDialog();
                     }
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 });
             }
         });
@@ -158,11 +179,14 @@ public class InviteMembersMeetingActivity extends AppCompatActivity {
                                 }
                             });
                         }
+                        mProgressBar.setVisibility(View.INVISIBLE);
                     }
                 }else{
                     Log.e(TAG,"Error getting meeting");
                 }
+                mProgressBar.setVisibility(View.INVISIBLE);
             });
         }
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }
