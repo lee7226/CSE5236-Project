@@ -47,11 +47,9 @@ public class MeetingAvailabilityActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        String[] test = new String[]{};
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         List<String> userIds = new ArrayList<>();
-        List<String> l = new ArrayList<>();
         if (extras != null && extras.size() > 0) {
             for (int i = 0; i < extras.size(); i++) {
                 userIds.add(extras.getString("user" + i));
@@ -67,35 +65,6 @@ public class MeetingAvailabilityActivity extends AppCompatActivity {
         }
 
         DisplayOpenAvals(userIds.toArray(new String[userIds.size()]));
-        //String open = GetOpenAvalability(userIds.toArray(new String[userIds.size()]));
-
-//        // TODO: this needs to be updated to not do the same thing as AvailabilityActivity
-//        CollectionReference avalRef = db.collection("availabilities");
-//        final Query query = avalRef.whereEqualTo("user",user.getUid());
-//        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @SuppressLint("LogNotTimber")
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    QuerySnapshot qs = task.getResult();
-//                    if (qs.size()>0) {
-//                        List<DocumentSnapshot> avalList = qs.getDocuments();
-//                        String availabilityInnerString = (String)avalList.get(0).get("availability");
-//                        for (int i = 0; i < mAvailabilityButtons.length; i++) {
-//                            if (availabilityInnerString.charAt(i) == '1') {
-//                                mAvailabilityButtons[i].setBackgroundColor(getResources().getColor(R.color.colorGreen));
-//                                mAvailabilityButtons[i].setContentDescription("1");
-//                            }
-//                        }
-//                        Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-//                    } else {
-//                        Log.d(TAG, "user has no availability");
-//                    }
-//                }else{
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            }
-//        });
 
         mSaveAvailability = findViewById(R.id.button_save_availability);
         mSaveAvailability.setVisibility(View.GONE);
