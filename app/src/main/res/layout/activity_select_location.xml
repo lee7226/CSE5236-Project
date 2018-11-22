@@ -8,6 +8,8 @@
     android:orientation="vertical">
 
 
+
+
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/location_map_view"
             android:layout_width="match_parent"
@@ -15,6 +17,14 @@
             mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
             mapbox:mapbox_cameraZoom="11"
             android:layout_weight="9">
+            <ProgressBar
+                android:id="@+id/progressBar_SelectLocationActivity"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="invisible"/>
+
         </com.mapbox.mapboxsdk.maps.MapView>
 
         <Button

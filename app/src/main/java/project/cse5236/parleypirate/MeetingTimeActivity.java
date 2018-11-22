@@ -38,6 +38,9 @@ public class MeetingTimeActivity extends AppCompatActivity {
         mStartTimeSpinner.setAdapter(adapter);
         mEndTimeSpinner.setAdapter(adapter);
 
+        mStartTimeSpinner.setSelection(9);
+        mEndTimeSpinner.setSelection(17);
+
         mSelectLocationButton = findViewById(R.id.button_select_location);
         mSelectLocationButton.setOnClickListener(v -> {
             int id = v.getId();

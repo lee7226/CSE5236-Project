@@ -1,20 +1,19 @@
 package project.cse5236.parleypirate;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -36,7 +35,9 @@ public class AvailabilityActivity extends AppCompatActivity {
     private Button[] mAvailabilityButtons;
     private Button mSaveAvailability;
 
+    private ProgressBar mProgressBar;
     private static String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,6 @@ public class AvailabilityActivity extends AppCompatActivity {
             mAvailabilityButtons[i].setBackgroundColor(getResources().getColor(R.color.colorRed));
             updateAvailabilityOnClick(mAvailabilityButtons[i], i);
         }
-
-
 
         CollectionReference usersRef = db.collection("users");
         final Query queryForId = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
@@ -100,8 +99,23 @@ public class AvailabilityActivity extends AppCompatActivity {
         });
 
         mSaveAvailability = findViewById(R.id.button_save_availability);
-        mSaveAvailability.setOnClickListener(v -> saveAvailability());
-
+        mSaveAvailability.setOnClickListener(v -> {
+            if(v.getId()==R.id.button_save_availability) {
+                mProgressBar = findViewById(R.id.progressBar_AvailabilityActivity);
+                mProgressBar.setVisibility(View.VISIBLE);
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                if(ni != null && ni.isConnected()) {
+                    saveAvailability();
+                }else {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AvailabilityActivity.this);
+                    builder.setMessage(R.string.error_no_network).setTitle(R.string.avast).setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        //do nothing
+                    }).create().show();
+                }
+            }
+        });
 
         mAvailabilitySpinner = findViewById(R.id.spinnerDayOfWeek);
 
@@ -205,6 +219,7 @@ public class AvailabilityActivity extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
+              mProgressBar.setVisibility(View.GONE);
             });
         } else {
             CollectionReference avalRef = db.collection("availabilities");
@@ -226,8 +241,10 @@ public class AvailabilityActivity extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "get failed with ", task1.getException());
                 }
+              mProgressBar.setVisibility(View.GONE);
             });
         }
+        
     }
 
     private void updateDatabaseAvailability(String id, String aval){
