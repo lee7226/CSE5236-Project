@@ -36,6 +36,8 @@ public class AvailabilityActivity extends AppCompatActivity {
     private Button mSaveAvailability;
 
     private ProgressBar mProgressBar;
+    private static String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,42 +185,66 @@ public class AvailabilityActivity extends AppCompatActivity {
 
 
         CollectionReference usersRef = db.collection("users");
-        final Query queryForId = usersRef.whereEqualTo("email",user.getEmail()).limit(1);
-        queryForId.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                QuerySnapshot qs = task.getResult();
-                if (qs.size()>0) {
-                    Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
-                    String userId = qs.getDocuments().get(0).getId();
-                    CollectionReference avalRef = db.collection("availabilities");
-                    final Query query = avalRef
-                            .whereEqualTo("user",qs.getDocuments().get(0).getId()).limit(1);
-                    query.get().addOnCompleteListener(task1 -> {
-                        if(task1.isSuccessful()){
-                            QuerySnapshot qs1 = task1.getResult();
-                            if (qs1.size()>0) {
-                                Log.d(TAG, "DocumentSnapshot data: " + qs1.getDocuments());
-                                List<DocumentSnapshot> docRefs = qs1.getDocuments();
-                                String id = docRefs.get(0).getId();
-                                updateDatabaseAvailability(id, getOnScreenAvailability());
+        if (userId == null) {
+            final Query queryForId = usersRef.whereEqualTo("email", user.getEmail()).limit(1);
+            queryForId.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    QuerySnapshot qs = task.getResult();
+                    if (qs.size() > 0) {
+                        Log.d(TAG, "DocumentSnapshot data: " + qs.getDocuments());
+                        userId = qs.getDocuments().get(0).getId();
+                        CollectionReference avalRef = db.collection("availabilities");
+                        final Query query = avalRef.whereEqualTo("user", userId).limit(1);
+                        query.get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                QuerySnapshot qs1 = task1.getResult();
+                                if (qs1.size() > 0) {
+                                    Log.d(TAG, "DocumentSnapshot data: " + qs1.getDocuments());
+                                    List<DocumentSnapshot> docRefs = qs1.getDocuments();
+                                    String id = docRefs.get(0).getId();
+                                    updateDatabaseAvailability(id, getOnScreenAvailability());
+                                } else {
+                                    Log.d(TAG, "User not found");
+                                    createDatabaseAvailability(getOnScreenAvailability());
+                                }
+                                Toast.makeText(getApplicationContext(), "Availability Saved!",
+                                        Toast.LENGTH_LONG).show();
                             } else {
-                                Log.d(TAG, "User not found");
-                                createDatabaseAvailability(getOnScreenAvailability());
+                                Log.d(TAG, "get failed with ", task1.getException());
                             }
-                            Toast.makeText(getApplicationContext(), "Availability Saved!",
-                                    Toast.LENGTH_LONG).show();
-                        }else{
-                            Log.d(TAG, "get failed with ", task1.getException());
-                        }
-                    });
+                        });
+                    } else {
+                        Log.d(TAG, "no user, shouldn't be on this screen");
+                    }
                 } else {
-                    Log.d(TAG, "no user, shouldn't be on this screen");
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }else{
-                Log.d(TAG, "get failed with ", task.getException());
-            }
-        mProgressBar.setVisibility(View.GONE);
-        });
+              mProgressBar.setVisibility(View.GONE);
+            });
+        } else {
+            CollectionReference avalRef = db.collection("availabilities");
+            final Query query = avalRef.whereEqualTo("user", userId).limit(1);
+            query.get().addOnCompleteListener(task1 -> {
+                if (task1.isSuccessful()) {
+                    QuerySnapshot qs1 = task1.getResult();
+                    if (qs1.size() > 0) {
+                        Log.d(TAG, "DocumentSnapshot data: " + qs1.getDocuments());
+                        List<DocumentSnapshot> docRefs = qs1.getDocuments();
+                        String id = docRefs.get(0).getId();
+                        updateDatabaseAvailability(id, getOnScreenAvailability());
+                    } else {
+                        Log.d(TAG, "User not found");
+                        createDatabaseAvailability(getOnScreenAvailability());
+                    }
+                    Toast.makeText(getApplicationContext(), "Availability Saved!",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Log.d(TAG, "get failed with ", task1.getException());
+                }
+              mProgressBar.setVisibility(View.GONE);
+            });
+        }
+        
     }
 
     private void updateDatabaseAvailability(String id, String aval){
